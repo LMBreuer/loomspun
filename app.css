@@ -3075,6 +3075,10 @@ button.floor-plan-personal-game:hover, button.floor-plan-personal-game:focus-vis
   .landing-page .cons-toolbar input[type="search"] { width:100%; max-width:none; }
   .landing-page .cons-toolbar input[type="search"],
   .landing-page .cons-toolbar input[type="text"] { min-width: min(100%, 210px); }
+  #conFilterDlg { width: calc(100vw - 24px); max-width: none; padding: 20px; }
+  #conFilterDlg .dactions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #conFilterDlg .dactions button { width: 100%; justify-content: center; }
+  #conFilterDlg #resetConFilters { grid-column: 1 / -1; }
   .landing-page .next-con-card { align-items: stretch; flex-direction: column; min-height: 0; }
   .next-con-actions { justify-content: flex-start; }
   .plan-page #crewContent .toolbar-card .crew-slot-group {
