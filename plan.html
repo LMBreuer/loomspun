@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg?v=20260728-4" type="image/svg+xml">
+<title>Loomspun · Raumplan</title>
+<script src="theme-bootstrap.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme-effects.css?v=20260729-14">
+<link rel="stylesheet" href="app.css?v=20260818-1">
+</head>
+<body class="plan-page">
+<a class="skip-link no-print" href="#main" data-i18n="skipToContent">Zum Inhalt springen</a>
+<div class="wrap">
+  <header class="app-header no-print">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><span class="brand-eyebrow" aria-hidden="true">&gt; </span>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></a>
+      <nav class="page-tabs slot-tabs" id="pageTabs" role="group" aria-label="Seite wählen" data-i18n-aria-label="pageNavigation"></nav>
+      <div class="header-right">
+        <div id="contrastAidSwitch" class="contrast-aid-slot" hidden></div>
+        <div class="controls-group">
+          <div id="langSwitch"></div>
+          <div class="controls-divider"></div>
+          <div id="themeSwitch"></div>
+        </div>
+        <button id="authBtn" type="button">Login / Registrieren</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="card" id="pageTitleCard" style="margin-bottom:var(--sp-4)">
+      <div class="plan-title-row">
+        <h1 id="pageTitle">Raumplan</h1>
+        <button type="button" class="con-switch-button no-print" id="conSwitchOpen" title="Con wechseln" aria-label="Con wechseln" data-i18n-title="switchCon" data-i18n-aria-label="switchCon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 3-3m-3 3 3 3M7 7h9a3 3 0 0 1 3 3v1M17 17l-3 3m3-3-3-3m3 3H8a3 3 0 0 1-3-3v-1"/></svg></button>
+      </div>
+      <p class="sub" id="pageSub" data-i18n="loading">Lädt …</p>
+      <div id="crewConSwitch" class="crew-con-switch no-print" hidden></div>
+    </div>
+    <div id="chromeExtras">
+      <div id="inviteBanner" class="no-print" hidden></div>
+      <p class="banner no-print" id="viewBanner" hidden></p>
+      <p id="status" role="status" aria-live="polite" data-i18n="loadingData">Lade Daten …</p>
+      <div class="kpi-bar no-print" id="kpiBar"></div>
+      <div class="legend no-print" id="legend"></div>
+      <div class="no-print" id="viewNavGroup">
+        <div class="public-view-tabs" id="viewTabs" role="group" aria-label="Ansicht wählen" data-i18n-aria-label="viewNavigation"></div>
+        <div class="card public-toolbar">
+          <div class="public-toolbar-controls">
+            <div class="toolbar-group toolbar-search-group">
+              <span class="toolbar-label" data-i18n="searchLabel">Suche</span>
+              <div class="global-search">
+                <input type="search" id="globalSearch" placeholder="Spiel, Anbieter, Raum oder Tisch …" data-i18n-placeholder="globalSearchPlaceholder" aria-label="Suche über alle Ansichten" data-i18n-aria-label="globalSearchPlaceholder">
+              </div>
+            </div>
+            <div class="toolbar-divider" id="personalDivider"></div>
+            <div class="toolbar-group" id="personalGroup">
+              <span class="toolbar-label" data-i18n="personalLabel">Für mich</span>
+              <div class="toolbar-pill-row public-personal-actions">
+                <button type="button" id="myGamesFilter" aria-pressed="false" data-i18n="myGames">Meine Spiele</button>
+                <button type="button" id="personalGamesProfile" hidden></button>
+              </div>
+            </div>
+            <div class="toolbar-divider" id="contextDivider"></div>
+            <div class="toolbar-group" id="contextGroup">
+              <span class="toolbar-label" id="contextLabel" data-i18n="rowsLabel">Zeilen</span>
+              <div id="axisSwitch" class="toolbar-pill-row" role="group" aria-label="Rasterzeilen wählen"></div>
+            </div>
+            <div class="toolbar-divider" id="detailDivider"></div>
+            <div class="toolbar-group" id="detailGroup">
+              <span class="toolbar-label" data-i18n="detailsLabel">Details</span>
+              <div id="detailSwitch" class="toolbar-pill-row" role="group" aria-label="Detailgrad wählen"></div>
+            </div>
+          </div>
+          <div class="public-toolbar-actions">
+            <span class="icon-btn info-tip-trigger" tabindex="0" role="button" aria-label="Hinweise zur Ansicht" data-info-text="">i</span>
+            <span id="floorPlanAction" class="floor-plan-public-action" hidden></span>
+            <button id="calendarDownloadBtn" class="toolbar-action" type="button" hidden><svg class="calendar-export-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M12 12v5m0 0-2-2m2 2 2-2"/></svg> <span data-i18n="calendarDownload">ICS</span></button>
+            <button id="printBtn" class="toolbar-action" type="button" title="Druckansicht öffnen" aria-label="Druckansicht öffnen" data-i18n-title="printCurrentView" data-i18n-aria-label="printCurrentView"><span class="toolbar-action-icon" aria-hidden="true">⎙</span> <span data-i18n="printBtn">Drucken</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section id="viewContent" aria-label="Öffentliche Ansicht" data-i18n-aria-label="publicViewRegion"></section>
+    <section id="crewContent" aria-label="Crew-Bereich" data-i18n-aria-label="crewRegion" hidden></section>
+    <section id="printContent" aria-label="Druckansicht" data-i18n-aria-label="printRegion" hidden></section>
+
+    <ul class="foot">
+      <li data-i18n="footPlayabl">Spiele werden bei jedem Öffnen live von der Playabl-API geladen; Plätze = Spielplätze + 1 anbietende Person.</li>
+      <li data-i18n="footRequest">Über „Änderung vorschlagen" am Spiel kann jede*r der Crew einen Wunsch schicken — bitte kurz begründen.</li>
+    </ul>
+    <div class="credits" id="credits"></div>
+  </main>
+</div>
+
+<dialog id="personalGamesDlg" aria-labelledby="personalGamesDlgH" aria-describedby="personalGamesDlgIntro">
+  <h2 id="personalGamesDlgH" data-i18n="myGames">Meine Spiele</h2>
+  <p class="personal-profile-intro" id="personalGamesDlgIntro" data-i18n="personalGamesIntro">Hinterlege deinen Playabl-Namen oder deine E-Mail-Adresse. Der Raumplan zeigt dann deine eigenen Angebote, bestätigten Anmeldungen und Wartelistenplätze.</p>
+  <form id="personalGamesForm">
+    <div class="frow">
+      <label for="personalGamesIdentity" data-i18n="personalIdentityLabel">Playabl-Name oder E-Mail-Adresse</label>
+      <input type="text" id="personalGamesIdentity" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    </div>
+    <p class="msg" id="personalGamesMsg" role="status" aria-live="polite"></p>
+    <p class="personal-profile-privacy" data-i18n="personalPrivacy">Die E-Mail-Adresse wird nicht gespeichert. Lokal bleiben nur Profil-ID und Playabl-Name; auf Playabl wird nichts verändert.</p>
+    <div class="dactions">
+      <button type="button" id="personalGamesReset" class="personal-games-reset" hidden data-i18n="removeAssociation">Zuordnung entfernen</button>
+      <button type="button" id="personalGamesCancel" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" id="personalGamesSave" class="primary" data-i18n="showMyGames">Meine Spiele anzeigen</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="conSwitchDlg" aria-labelledby="conSwitchTitle">
+  <h2 id="conSwitchTitle" data-i18n="switchCon">Con wechseln</h2>
+  <div class="frow"><label for="conSwitchSearch" data-i18n="search">Suchen</label><input type="search" id="conSwitchSearch" placeholder="Con suchen …" data-i18n-placeholder="searchCon"></div>
+  <nav class="con-switch-list" id="conSwitchList" aria-label="Verfügbare Cons" data-i18n-aria-label="availableCons"></nav>
+  <div class="dactions"><a class="btn" href="index.html" data-i18n="allCons">Alle Cons</a><button type="button" onclick="this.closest('dialog').close()" data-i18n="close">Schließen</button></div>
+</dialog>
+
+<!-- Änderungswunsch -->
+<dialog id="requestDlg" aria-labelledby="requestDlgH">
+  <h2 id="requestDlgH" data-i18n="proposeChange">Änderung vorschlagen</h2>
+  <form method="dialog" id="requestForm">
+    <div class="frow"><label for="reqGame" data-i18n="concerns">Betrifft</label><input type="text" id="reqGame" readonly></div>
+    <div class="frow"><label for="reqMsg" data-i18n="reqMsgLabel">Was soll anders sein – und warum? *</label><textarea id="reqMsg" rows="4" required minlength="10" maxlength="2000" placeholder="z.B. Bitte in einen ruhigeren Raum – Runde mit viel Konzentration." data-i18n-placeholder="reqMsgPlaceholder"></textarea></div>
+    <div class="frow"><label for="reqContact" data-i18n="reqContactLabel">Rückfragen an (optional, z.B. Discord-Name)</label><input type="text" id="reqContact" maxlength="100"></div>
+    <input type="text" id="reqHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="msg" id="reqMsgOut" role="status"></p>
+    <div class="dactions">
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="submit">Absenden</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Raum anlegen/bearbeiten -->
+<dialog id="roomDlg" aria-labelledby="roomDlgH">
+  <h2 id="roomDlgH" data-i18n="room">Raum</h2>
+  <form method="dialog" id="roomForm">
+    <input type="hidden" id="roomId">
+    <div class="frow"><label for="roomName" data-i18n="nameRequired">Name *</label><input type="text" id="roomName" required maxlength="60"></div>
+    <div class="fgrid" style="grid-template-columns:2fr 1fr">
+      <div class="frow"><label for="roomFloor" data-i18n="floorLocation">Stock / Lage</label><input type="text" id="roomFloor" maxlength="40" placeholder="z.B. EG, 1. Stock links" data-i18n-placeholder="floorLocationPlaceholder"></div>
+      <div class="frow"><label for="roomSort" data-i18n="sortOrder100">Reihenfolge (1–100)</label><input type="number" id="roomSort" min="0" max="100" value="0"></div>
+    </div>
+    <fieldset class="room-color-field"><legend data-i18n="roomColorLabel">Raumfarbe</legend>
+      <div class="room-color-modes" role="radiogroup" data-i18n-aria-label="roomColorModeAria">
+        <label class="toggle-row"><input type="radio" name="roomColorMode" value="standard" checked aria-controls="roomColorTrigger"> <span data-i18n="roomColorAuto">Automatische Standardfarbe verwenden</span></label>
+        <div class="room-custom-choice">
+          <label class="toggle-row"><input type="radio" name="roomColorMode" value="custom" aria-controls="roomColorTrigger"> <span data-i18n="roomColorCustom">Eigene Grundfarbe wählen</span></label>
+          <button type="button" class="room-color-trigger" id="roomColorTrigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="roomColorPopover">
+            <span class="room-color-preview" id="roomColorPreview" aria-hidden="true"></span><span class="room-color-current" id="roomColorCurrentHex">#5B8DEF</span>
+          </button>
+        </div>
+        <button type="button" class="icon-btn info-tip-trigger" data-i18n-aria-label="roomColorHintAria" data-info-i18n="roomColorHint">i</button>
+      </div>
+      <div class="room-color-popover" id="roomColorPopover" role="dialog" aria-modal="false" data-i18n-aria-label="roomColorDialog" hidden>
+        <div class="room-color-popover-head"><strong data-i18n="roomColorDialog">Eigene Grundfarbe</strong><button type="button" class="icon-btn" id="roomColorClose" data-i18n-aria-label="closeColorPicker">×</button></div>
+        <div class="room-color-manual">
+          <label class="native-color-picker" for="roomColor"><span data-i18n="roomColorFree">Frei wählen</span><input type="color" id="roomColor" value="#5b8def"></label>
+          <label for="roomColorHex"><span data-i18n="roomColorHex">Hex-Code</span><input type="text" id="roomColorHex" value="#5B8DEF" maxlength="7" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text"></label>
+        </div>
+        <div class="room-color-palette" id="roomColorPalette" role="group" data-i18n-aria-label="roomColorPaletteAria">
+          <section><h3 data-i18n="roomColorVivid">Kräftig</h3><div class="room-color-row"><button type="button" data-room-color="#e41a1c" style="--swatch:#e41a1c" aria-label="#E41A1C"></button><button type="button" data-room-color="#377eb8" style="--swatch:#377eb8" aria-label="#377EB8"></button><button type="button" data-room-color="#4daf4a" style="--swatch:#4daf4a" aria-label="#4DAF4A"></button><button type="button" data-room-color="#984ea3" style="--swatch:#984ea3" aria-label="#984EA3"></button><button type="button" data-room-color="#ff7f00" style="--swatch:#ff7f00" aria-label="#FF7F00"></button><button type="button" data-room-color="#ffff33" style="--swatch:#ffff33" aria-label="#FFFF33"></button><button type="button" data-room-color="#a65628" style="--swatch:#a65628" aria-label="#A65628"></button><button type="button" data-room-color="#f781bf" style="--swatch:#f781bf" aria-label="#F781BF"></button></div></section>
+          <section><h3 data-i18n="roomColorSubtle">Dezent</h3><div class="room-color-row"><button type="button" data-room-color="#8dd3c7" style="--swatch:#8dd3c7" aria-label="#8DD3C7"></button><button type="button" data-room-color="#ffffb3" style="--swatch:#ffffb3" aria-label="#FFFFB3"></button><button type="button" data-room-color="#bebada" style="--swatch:#bebada" aria-label="#BEBADA"></button><button type="button" data-room-color="#fb8072" style="--swatch:#fb8072" aria-label="#FB8072"></button><button type="button" data-room-color="#80b1d3" style="--swatch:#80b1d3" aria-label="#80B1D3"></button><button type="button" data-room-color="#fdb462" style="--swatch:#fdb462" aria-label="#FDB462"></button><button type="button" data-room-color="#b3de69" style="--swatch:#b3de69" aria-label="#B3DE69"></button><button type="button" data-room-color="#fccde5" style="--swatch:#fccde5" aria-label="#FCCDE5"></button></div></section>
+          <section><h3 data-i18n="roomColorPastel">Pastell</h3><div class="room-color-row"><button type="button" data-room-color="#fbb4ae" style="--swatch:#fbb4ae" aria-label="#FBB4AE"></button><button type="button" data-room-color="#b3cde3" style="--swatch:#b3cde3" aria-label="#B3CDE3"></button><button type="button" data-room-color="#ccebc5" style="--swatch:#ccebc5" aria-label="#CCEBC5"></button><button type="button" data-room-color="#decbe4" style="--swatch:#decbe4" aria-label="#DECBE4"></button><button type="button" data-room-color="#fed9a6" style="--swatch:#fed9a6" aria-label="#FED9A6"></button><button type="button" data-room-color="#ffffcc" style="--swatch:#ffffcc" aria-label="#FFFFCC"></button><button type="button" data-room-color="#e5d8bd" style="--swatch:#e5d8bd" aria-label="#E5D8BD"></button><button type="button" data-room-color="#fddaec" style="--swatch:#fddaec" aria-label="#FDDAEC"></button></div></section>
+          <section><h3 data-i18n="roomColorDark">Dunkel</h3><div class="room-color-row"><button type="button" data-room-color="#1b9e77" style="--swatch:#1b9e77" aria-label="#1B9E77"></button><button type="button" data-room-color="#d95f02" style="--swatch:#d95f02" aria-label="#D95F02"></button><button type="button" data-room-color="#7570b3" style="--swatch:#7570b3" aria-label="#7570B3"></button><button type="button" data-room-color="#e7298a" style="--swatch:#e7298a" aria-label="#E7298A"></button><button type="button" data-room-color="#66a61e" style="--swatch:#66a61e" aria-label="#66A61E"></button><button type="button" data-room-color="#e6ab02" style="--swatch:#e6ab02" aria-label="#E6AB02"></button><button type="button" data-room-color="#a6761d" style="--swatch:#a6761d" aria-label="#A6761D"></button><button type="button" data-room-color="#666666" style="--swatch:#666666" aria-label="#666666"></button></div></section>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="room-marker-field"><legend data-i18n="roomMarkerLabel">Symbol im Kontrastmodus</legend>
+      <div class="room-marker-modes" role="radiogroup" data-i18n-aria-label="roomMarkerAria">
+        <label class="toggle-row"><input type="radio" name="roomMarkerMode" value="automatic" checked aria-controls="roomMarkerTrigger"> <span data-i18n="roomMarkerAuto">Automatisch</span></label>
+        <div class="room-marker-custom-choice">
+          <label class="toggle-row"><input type="radio" name="roomMarkerMode" value="custom" aria-controls="roomMarkerTrigger"> <span data-i18n="roomMarkerCustom">Eigenes Symbol wählen</span></label>
+          <button type="button" class="room-marker-trigger" id="roomMarkerTrigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="roomMarkerPopover"><span class="room-marker-preview" id="roomMarkerPreview" aria-hidden="true">●</span><span class="room-marker-current" id="roomMarkerCurrentName">Circle</span></button>
+        </div>
+        <button type="button" class="icon-btn info-tip-trigger" data-i18n-aria-label="roomMarkerHintAria" data-info-i18n="roomMarkerHint">i</button>
+      </div>
+      <div class="room-marker-popover" id="roomMarkerPopover" role="dialog" aria-modal="false" data-i18n-aria-label="roomMarkerDialog" hidden>
+        <div class="room-marker-popover-head"><strong data-i18n="roomMarkerDialog">Eigenes Symbol</strong><button type="button" class="icon-btn" id="roomMarkerClose" data-i18n-aria-label="closeMarkerPicker">×</button></div>
+        <div class="room-marker-options" id="roomMarkerOptions" role="group" data-i18n-aria-label="roomMarkerAria">
+          <section><h3 data-i18n="roomMarkerShapes">Formen</h3><div class="room-marker-row"><button type="button" class="room-marker-option" data-room-marker="circle" data-i18n-aria-label="roomMarkerCircle" title="●">●</button><button type="button" class="room-marker-option" data-room-marker="triangle" data-i18n-aria-label="roomMarkerTriangle" title="▲">▲</button><button type="button" class="room-marker-option" data-room-marker="square" data-i18n-aria-label="roomMarkerSquare" title="■">■</button><button type="button" class="room-marker-option" data-room-marker="diamond" data-i18n-aria-label="roomMarkerDiamond" title="◆">◆</button><button type="button" class="room-marker-option" data-room-marker="plus" data-i18n-aria-label="roomMarkerPlus" title="✚">✚</button><button type="button" class="room-marker-option" data-room-marker="cross" data-i18n-aria-label="roomMarkerCross" title="✕">✕</button><button type="button" class="room-marker-option" data-room-marker="hexagon" data-i18n-aria-label="roomMarkerHexagon" title="⬢">⬢</button></div></section>
+          <section><h3 data-i18n="roomMarkerNature">Natur &amp; Himmel</h3><div class="room-marker-row"><button type="button" class="room-marker-option" data-room-marker="star" data-i18n-aria-label="roomMarkerStar" title="★">★</button><button type="button" class="room-marker-option" data-room-marker="sparkle" data-i18n-aria-label="roomMarkerSparkle" title="✦">✦</button><button type="button" class="room-marker-option" data-room-marker="sun" data-i18n-aria-label="roomMarkerSun" title="☀">☀</button><button type="button" class="room-marker-option" data-room-marker="moon" data-i18n-aria-label="roomMarkerMoon" title="☾">☾</button><button type="button" class="room-marker-option" data-room-marker="cloud" data-i18n-aria-label="roomMarkerCloud" title="☁">☁</button><button type="button" class="room-marker-option" data-room-marker="flower" data-i18n-aria-label="roomMarkerFlower" title="✿">✿</button><button type="button" class="room-marker-option" data-room-marker="tree" data-i18n-aria-label="roomMarkerTree" title="Baum"><span class="room-tree" aria-hidden="true"></span></button></div></section>
+          <section><h3 data-i18n="roomMarkerSigns">Zeichen &amp; Medien</h3><div class="room-marker-row"><button type="button" class="room-marker-option" data-room-marker="heart" data-i18n-aria-label="roomMarkerHeart">♥</button><button type="button" class="room-marker-option" data-room-marker="flag" data-i18n-aria-label="roomMarkerFlag">⚑</button><button type="button" class="room-marker-option" data-room-marker="key" data-i18n-aria-label="roomMarkerKey">⚿</button><button type="button" class="room-marker-option" data-room-marker="book" data-i18n-aria-label="roomMarkerBook"><span class="room-book" aria-hidden="true"></span></button><button type="button" class="room-marker-option" data-room-marker="music" data-i18n-aria-label="roomMarkerMusic">♪</button><button type="button" class="room-marker-option" data-room-marker="bulb" data-i18n-aria-label="roomMarkerBulb">☼</button><button type="button" class="room-marker-option" data-room-marker="letter" data-i18n-aria-label="roomMarkerLetter">✉</button></div></section>
+          <section><h3 data-i18n="roomMarkerPlaces">Orte &amp; Nutzung</h3><div class="room-marker-row"><button type="button" class="room-marker-option" data-room-marker="dice" data-i18n-aria-label="roomMarkerDice">⚄</button><button type="button" class="room-marker-option" data-room-marker="invader" data-i18n-aria-label="roomMarkerInvader"><span class="room-invader" aria-hidden="true"></span></button><button type="button" class="room-marker-option" data-room-marker="wc" data-i18n-aria-label="roomMarkerWc"><span class="room-marker-text">WC</span></button><button type="button" class="room-marker-option" data-room-marker="kitchen" data-i18n-aria-label="roomMarkerKitchen">♨</button><button type="button" class="room-marker-option" data-room-marker="door" data-i18n-aria-label="roomMarkerDoor"><span class="room-door" aria-hidden="true"></span></button><button type="button" class="room-marker-option" data-room-marker="coat" data-i18n-aria-label="roomMarkerCoat">♧</button><button type="button" class="room-marker-option" data-room-marker="toy" data-i18n-aria-label="roomMarkerToy"><span class="room-meeple" aria-hidden="true"></span></button></div></section>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset style="border:none;margin-bottom:10px"><legend style="font-size:.78rem;color:var(--text-secondary);margin-bottom:4px" data-i18n="features">Eigenschaften</legend>
+      <div class="filter-chips" id="roomFeatures"></div>
+    </fieldset>
+    <div class="frow"><label for="roomNotes" data-i18n="specialNotes">Besonderheiten (Freitext)</label><textarea id="roomNotes" rows="2" maxlength="300"></textarea></div>
+    <div class="dactions">
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Tisch anlegen/bearbeiten -->
+<dialog id="tableDlg" aria-labelledby="tableDlgH">
+  <h2 id="tableDlgH" data-i18n="table">Tisch</h2>
+  <form method="dialog" id="tableForm">
+    <input type="hidden" id="tableId"><input type="hidden" id="tableRoomId">
+    <div class="frow"><label for="tableName" data-i18n="nameRequired">Name *</label><input type="text" id="tableName" required maxlength="40" placeholder="z.B. Tisch 1" data-i18n-placeholder="tableNamePlaceholder"></div>
+    <div class="frow"><label for="tableSeats" data-i18n="seatsInclGm">Plätze (Spielende inkl. SL) *</label><input type="number" id="tableSeats" min="2" max="200" required value="6"></div>
+    <div class="frow"><label for="tableNotes" data-i18n="noteOptional">Hinweis (optional)</label><input type="text" id="tableNotes" maxlength="120"></div>
+    <div class="dactions">
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Slot anlegen/bearbeiten (v.a. für manuelle Cons ohne Playabl-Spiele) -->
+<dialog id="slotDlg" aria-labelledby="slotDlgH">
+  <h2 id="slotDlgH" data-i18n="slot">Slot</h2>
+  <form method="dialog" id="slotForm">
+    <input type="hidden" id="slotId">
+    <div class="frow"><label for="slotLabel" data-i18n="labelRequired">Bezeichnung *</label><input type="text" id="slotLabel" required maxlength="60" placeholder="z.B. Freitag Abend" data-i18n-placeholder="slotLabelPlaceholder"></div>
+    <div class="frow"><label for="slotSort" data-i18n="sortOrder">Reihenfolge</label><input type="number" id="slotSort" min="0" max="999" value="0"></div>
+    <div class="dactions">
+      <button type="button" id="slotDelBtn" class="danger" hidden data-i18n="delete">Löschen</button>
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Zeitabschnitts-Vorlage (Slot-Bucket) anlegen/bearbeiten -->
+<dialog id="bucketDlg" aria-labelledby="bucketDlgH">
+  <h2 id="bucketDlgH" data-i18n="timeBlock">Zeitabschnitt</h2>
+  <form method="dialog" id="bucketForm">
+    <input type="hidden" id="bucketId">
+    <div class="frow"><label for="bucketLabel" data-i18n="labelRequired">Bezeichnung *</label><input type="text" id="bucketLabel" required maxlength="40" placeholder="z.B. Vormittag" data-i18n-placeholder="bucketLabelPlaceholder"></div>
+    <div class="fgrid" style="grid-template-columns:1fr 1fr">
+      <div class="frow"><label for="bucketStart" data-i18n="fromHour">Von (Stunde)</label><input type="number" id="bucketStart" min="0" max="24" step="0.5" value="0"></div>
+      <div class="frow"><label for="bucketEnd" data-i18n="toHour">Bis (Stunde)</label><input type="number" id="bucketEnd" min="0" max="24" step="0.5" value="14"></div>
+    </div>
+    <div class="frow"><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="bucketActive" checked> <span data-i18n="bucketActiveLabel">aktiv (wird für neue Tage verwendet)</span></label></div>
+    <div class="dactions">
+      <button type="button" id="bucketDelBtn" class="danger" hidden data-i18n="delete">Löschen</button>
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Auto-Zuordnung: Vorschau vor der Übernahme -->
+<dialog id="autoPreviewDlg" aria-labelledby="autoPreviewDlgH">
+  <h2 id="autoPreviewDlgH" data-i18n="autoAssignPreviewTitle">Vorschlag: Auto-Zuordnung</h2>
+  <div class="auto-preview-explainer">
+    <strong data-i18n="autoAssignRulesTitle">So entscheidet die Auto-Zuordnung</strong>
+    <p id="autoPreviewExplanation"></p>
+  </div>
+  <p class="auto-preview-summary" id="autoPreviewSummary"></p>
+  <p class="auto-preview-edit-hint" data-i18n="autoAssignEditHint">Ziel direkt ändern; ein bereits verwendeter Tisch wird mit dem bisherigen Ziel getauscht.</p>
+  <div class="auto-preview-list" id="autoPreviewList"></div>
+  <div class="dactions">
+    <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+    <button type="button" id="autoPreviewApplyBtn" class="primary" data-i18n="apply">Übernehmen</button>
+  </div>
+</dialog>
+
+<!-- Alle Tischzuordnungen des aktiven Slots lösen -->
+<dialog id="clearSlotDlg" aria-labelledby="clearSlotDlgH">
+  <h2 id="clearSlotDlgH" data-i18n="clearSlotDialogTitle">Slot wirklich leeren?</h2>
+  <div class="danger-confirm-panel">
+    <strong id="clearSlotWarningTitle"></strong>
+    <p id="clearSlotWarningText"></p>
+  </div>
+  <p class="msg err" id="clearSlotMsg" role="alert"></p>
+  <div class="dactions">
+    <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+    <button type="button" id="clearSlotConfirmBtn" class="danger" data-i18n="clearSlotConfirmBtn">Zuordnungen entfernen</button>
+  </div>
+</dialog>
+
+
+<!-- Spiel anlegen/bearbeiten (manuell, ohne Playabl) -->
+<dialog id="gameDlg" aria-labelledby="gameDlgH">
+  <h2 id="gameDlgH" data-i18n="game">Spiel</h2>
+  <form method="dialog" id="gameForm">
+    <input type="hidden" id="gameId">
+    <div class="frow"><label for="gameTitle" data-i18n="titleRequired">Titel *</label><input type="text" id="gameTitle" required maxlength="100"></div>
+    <div class="fgrid" style="grid-template-columns:2fr 1fr">
+      <div class="frow"><label for="gameProvider" data-i18n="providerOptional">Anbieter (optional)</label><input type="text" id="gameProvider" maxlength="80"></div>
+      <div class="frow"><label for="gameSeats" data-i18n="peopleInclGm">Personen (inkl. Leitung) *</label><input type="number" id="gameSeats" min="1" max="200" required value="5"></div>
+    </div>
+    <div class="frow"><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="gameWs"> <span data-i18n="workshopPanel">Workshop/Panel</span></label></div>
+    <div class="frow"><label for="gameSlot" data-i18n="gameSlotLabel">Slot (optional — ohne Slot bleibt das Spiel im Backlog von „Spiele verwalten“)</label><select id="gameSlot"><option value="" data-i18n="noSlotOption">– kein Slot –</option></select></div>
+    <div class="frow"><label for="gameDesc" data-i18n="descOptional">Beschreibung (optional)</label><textarea id="gameDesc" rows="2" maxlength="500"></textarea></div>
+    <div class="frow"><label data-i18n="gameReqLabel">Anforderungen an den Tisch/Raum (optional, fürs Matching)</label><div class="filter-chips" id="gameFeatures"></div></div>
+    <div class="dactions">
+      <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+      <button type="submit" class="primary" data-i18n="save">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="punk-zine-quotes.js"></script>
+<script src="app-config.js"></script>
+<script src="utils.js"></script>
+<script src="themes.js?v=20260728-2"></script>
+<script src="i18n.js?v=20260818-3"></script>
+<script src="supabase-api.js?v=20260808-1"></script>
+<script src="auth.js"></script>
+<script src="playabl-api.js?v=20260731-1"></script>
+<script src="guided-tour.js?v=20260810-4"></script>
+<script src="plan-core.js?v=20260818-1"></script>
+<script src="calendar-export.js?v=20260816-1"></script>
+<script src="floor-plan-model.js?v=20260813-1"></script>
+<script src="floor-plan-editor.js?v=20260812-2"></script>
+<script src="floor-plan-transfer.js?v=20260810-1"></script>
+<script src="floor-plan-viewer.js?v=20260813-1"></script>
+<script src="plan-render-public.js?v=20260818-1"></script>
+<script src="plan-render-crew.js?v=20260810-3"></script>
+<script src="plan-print.js?v=20260808-1"></script>
+<script src="plan-commands.js"></script>
+<script src="plan-interactions.js?v=20260811-4"></script>
+<script src="plan-dialogs.js"></script>
+<script src="plan-start.js?v=20260818-1"></script>
+</body>
+</html>

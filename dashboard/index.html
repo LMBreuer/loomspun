@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="../favicon.svg?v=20260728-4" type="image/svg+xml">
+<title>Loomspun · Dashboard</title>
+<script src="theme-bootstrap.js?v=20260818-1"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css?v=20260818-1">
+<link rel="stylesheet" href="../loomspun-shell.css?v=20260818-1">
+</head>
+<body class="dashboard-page">
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+<div class="wrap">
+  <header class="app-header" aria-label="Kopfzeile">
+    <div class="header-inner">
+      <a class="brand" href="../index.html"><span class="brand-eyebrow" aria-hidden="true">&gt; </span>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></a>
+      <nav class="page-tabs slot-tabs" id="pageTabs" aria-label="Seite wählen">
+        <a href="../index.html" aria-pressed="false">Cons</a>
+        <a href="#" aria-pressed="true">Dashboard</a>
+        <span aria-disabled="true">Raumplan</span>
+        <span aria-disabled="true">🔒 Crew</span>
+      </nav>
+      <div class="header-right">
+        <div id="contrastAidSwitch" class="contrast-aid-slot" hidden></div>
+        <div class="controls-group">
+          <div class="language-switch" role="group" aria-label="Sprache wählen">
+            <button type="button" data-language="de" aria-pressed="true" aria-label="Deutsch">DE</button>
+            <button type="button" data-language="en" aria-pressed="false" aria-label="English">EN</button>
+          </div>
+          <span class="controls-divider" aria-hidden="true"></span>
+          <span class="sr-only">Farbschema wählen</span>
+          <div id="themeSwitch"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <header class="dashboard-head" aria-label="Dashboard-Kopfzeile">
+    <section class="dashboard-hero" aria-labelledby="pageTitle">
+      <div class="dashboard-eyebrow">Playabl · Spielangebot pro Slot<span class="brand-cursor" aria-hidden="true">_</span></div>
+      <div class="dashboard-title-row">
+        <h1 id="pageTitle">Spielangebot pro Slot</h1>
+        <button type="button" class="event-switch-button" id="eventSwitchOpen" title="Veranstaltung wechseln" aria-label="Veranstaltung wechseln"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 3-3m-3 3 3 3M7 7h9a3 3 0 0 1 3 3v1M17 17l-3 3m3-3-3-3m3 3H8a3 3 0 0 1-3-3v-1"/></svg></button>
+      </div>
+      <p class="sub" id="pageSub">Daten werden live von Playabl geladen …</p>
+      <p id="rsvpBanner" class="banner" role="status" hidden></p>
+    </section>
+  </header>
+
+  <main id="main">
+    <nav class="controls" aria-label="Ansicht, Event und Ziel wählen">
+      <div class="controls-primary">
+        <div class="tabs" role="group" aria-label="Ansicht">
+          <button id="tabOverview" type="button" aria-pressed="true">Übersicht</button>
+          <button id="tabCalendar" type="button" aria-pressed="false">Kalender</button>
+        </div>
+        <button id="slotConfigOpen" class="setup-button dashboard-action-button" type="button">Setup</button>
+      </div>
+      <div class="controls-settings" aria-label="Aktive Einstellungen">
+        <div class="setting-summary">
+          <span class="setting-summary-label">Ziel-Plätze pro Slot</span>
+          <span class="setting-summary-value" id="targetSummary">70–80</span>
+          <span class="setting-source" id="targetSourceSummary"></span>
+        </div>
+        <div class="setting-summary">
+          <span class="setting-summary-label">Slots</span>
+          <span class="setting-summary-value" id="slotsSummary">werden geladen …</span>
+          <span class="setting-source" id="slotsSourceSummary"></span>
+        </div>
+        <button class="settings-info-button" id="settingsInfoOpen" type="button" aria-label="Informationen zu Zielplätzen, Slots und Teilnehmendenplanung">i</button>
+      </div>
+    </nav>
+    <p id="status" role="status" aria-live="polite">Lade Daten von Playabl …</p>
+    <div id="app"></div>
+    <section id="calView" hidden aria-label="Kalender-Ansicht"></section>
+  </main>
+  <div class="foot" id="credits" style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:32px;padding-top:12px;border-top:1px solid var(--grid)"></div>
+</div>
+<div id="tooltip" aria-hidden="true"></div>
+<img class="solarpunk-airship" src="https://commons.wikimedia.org/wiki/Special:FilePath/Airship-Zeppelin-LZ-127.svg" alt="" aria-hidden="true">
+<dialog id="eventSwitchDlg" aria-labelledby="eventSwitchTitle">
+  <div class="slot-config-form">
+    <div class="slot-config-header">
+      <div><h2 id="eventSwitchTitle">Veranstaltung wechseln</h2><p>Wähle eine öffentliche Veranstaltung aus Playabl.</p></div>
+      <button class="slot-config-close" id="eventSwitchClose" type="button" aria-label="Dialog schließen">×</button>
+    </div>
+    <div class="slot-config-body event-switch-fields">
+      <label class="field" for="communitySelect"><span>Community</span><select id="communitySelect"><option value="">– lädt –</option></select></label>
+      <label class="field" for="eventSelect"><span>Veranstaltung</span><select id="eventSelect"><option value="">– lädt –</option></select></label>
+    </div>
+  </div>
+</dialog>
+<dialog id="slotConfigDlg" aria-labelledby="slotConfigTitle" aria-describedby="slotConfigIntro">
+  <form method="dialog" class="slot-config-form">
+    <div class="slot-config-header">
+      <div>
+        <h2 id="slotConfigTitle">Dashboard-Setup</h2>
+        <p id="slotConfigIntro">Passe Zielkorridor, Sonderformat-Zählung und Zeitfenster für dieses Event an. Die Einstellungen bleiben lokal in diesem Browser.</p>
+      </div>
+      <button id="slotConfigClose" class="slot-config-close" value="cancel" formnovalidate aria-label="Dialog schließen">×</button>
+    </div>
+    <div class="slot-config-body">
+      <section class="setup-target" aria-labelledby="setupTargetTitle">
+        <h3 id="setupTargetTitle">Ziel-Plätze pro Slot</h3>
+        <p id="targetEstimateNote">Der Zielkorridor wird in den Kennzahlen und Auswertungen verwendet.</p>
+        <div class="setup-target-fields">
+          <label for="zielMin"><span id="targetMinLabel">Von</span><input id="zielMin" type="number" min="1" max="999" aria-label="Ziel von"></label>
+          <span class="setup-target-separator" aria-hidden="true">–</span>
+          <label for="zielMax"><span id="targetMaxLabel">Bis</span><input id="zielMax" type="number" min="1" max="999" aria-label="Ziel bis"></label>
+        </div>
+        <button type="button" id="targetConfigReset" class="target-reset">Ziel neu ermitteln</button>
+        <label class="setup-special-toggle" for="includeSpecialFormats">
+          <input id="includeSpecialFormats" type="checkbox">
+          <span><strong id="includeSpecialFormatsLabel">Sonderformate mitzählen</strong><small id="includeSpecialFormatsHint">Bezieht sie lokal in Platz-, Frei- und Bedarfszahlen ein.</small></span>
+        </label>
+      </section>
+      <section class="setup-personal" aria-labelledby="setupPersonalTitle">
+        <h3 id="setupPersonalTitle">Mein Kalender</h3>
+        <p id="setupPersonalStatus">Noch keine Zuordnung gespeichert. Du kannst sie im Kalender über „Meine Spiele“ festlegen.</p>
+        <div class="setup-personal-actions">
+          <button type="button" id="personalCalendarSetupChange" class="target-reset">Zuordnung festlegen</button>
+          <button type="button" id="personalCalendarReset" class="target-reset" hidden>Zuordnung zurücksetzen</button>
+        </div>
+      </section>
+      <h3 id="setupSlotsTitle" class="setup-slots-title">Slot-Zeiten</h3>
+      <div id="slotConfigRows"></div>
+    </div>
+    <div class="slot-config-actions">
+      <button type="button" id="slotConfigAdd">+ Slot hinzufügen</button>
+      <span class="action-spacer"></span>
+      <button type="button" id="slotConfigReset" class="secondary-action">Slots neu ermitteln</button>
+      <button id="slotConfigCancel" value="cancel" formnovalidate class="secondary-action">Abbrechen</button>
+      <button type="button" id="slotConfigSave" class="primary-action">Setup speichern</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="personalCalendarDlg" class="personal-calendar-dialog" aria-labelledby="personalCalendarTitle" aria-describedby="personalCalendarIntro">
+  <form class="slot-config-form" id="personalCalendarForm">
+    <div class="slot-config-header">
+      <div>
+        <h2 id="personalCalendarTitle">Mein Kalender</h2>
+        <p id="personalCalendarIntro">Hinterlege deinen Playabl-Namen oder deine E-Mail-Adresse, um eigene Angebote, bestätigte Anmeldungen und Wartelistenplätze zu sehen.</p>
+      </div>
+      <button class="slot-config-close" id="personalCalendarClose" type="button" aria-label="Dialog schließen">×</button>
+    </div>
+    <div class="slot-config-body personal-calendar-body">
+      <label class="personal-calendar-field" for="personalCalendarIdentity">
+        <span id="personalCalendarIdentityLabel">Playabl-Name oder E-Mail-Adresse</span>
+        <input id="personalCalendarIdentity" name="identity" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <p class="personal-calendar-message" id="personalCalendarMessage" role="status" aria-live="polite"></p>
+      <p class="personal-calendar-privacy" id="personalCalendarPrivacy">Die E-Mail-Adresse wird nicht gespeichert. Lokal bleiben nur Profil-ID und Playabl-Name; auf Playabl wird nichts verändert.</p>
+    </div>
+    <div class="slot-config-actions">
+      <span class="action-spacer"></span>
+      <button type="button" id="personalCalendarCancel" class="secondary-action">Abbrechen</button>
+      <button type="submit" id="personalCalendarSave" class="primary-action">Meine Spiele anzeigen</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="settingsInfoDlg" aria-labelledby="settingsInfoTitle">
+  <div class="slot-config-form">
+    <div class="slot-config-header">
+      <div>
+        <h2 id="settingsInfoTitle">Wie funktionieren Zielplätze, Slots und Teilnehmendenplanung?</h2>
+        <p id="settingsInfoIntro">Hintergrund zur Auswertung, automatischen Erkennung, Teilnehmendenplanung und lokalen Konfiguration.</p>
+      </div>
+      <button class="slot-config-close" id="settingsInfoClose" type="button" aria-label="Informationen schließen">×</button>
+    </div>
+    <div class="settings-info-content">
+      <section>
+        <h3 id="settingsInfoTargetTitle">Ziel-Plätze pro Slot</h3>
+        <p id="settingsInfoTargetText">Der Zielkorridor beschreibt, wie viele Personen in jedem Zeitfenster durch angebotene Runden untergebracht werden sollen. Das Dashboard vergleicht die aktuell angebotenen Spielplätze mit diesem Korridor und zeigt, in welchen Slots weitere Runden gebraucht werden.</p>
+        <p class="settings-info-note" id="settingsInfoCountText"><strong>Gezählt werden Spielplätze plus anbietende Person</strong> pro Session. Sonderformate sind standardmäßig ausgenommen und können im Setup lokal wieder einbezogen werden.</p>
+      </section>
+      <section>
+        <h3 id="settingsInfoSourcesTitle">Woher kommen die Slots?</h3>
+        <ol>
+          <li id="settingsInfoSourceManual"><strong>Manuelle Einstellung:</strong> Eine im Setup gespeicherte Konfiguration hat immer Vorrang.</li>
+          <li id="settingsInfoSourcePlan"><strong>Loomspun-Raumplan:</strong> Ist das Event mit einer Raumplanung verbunden, werden deren Zeitfenster übernommen.</li>
+          <li id="settingsInfoSourceAuto"><strong>Automatische Erkennung:</strong> Ohne diese Quellen untersucht das Dashboard beim ersten Laden die Startzeiten aller Sessions.</li>
+          <li id="settingsInfoSourceFallback"><strong>Fallback:</strong> Reichen die Daten für eine verlässliche Schätzung nicht aus, gilt Vormittag 0–14 Uhr und Nachmittag 14–24 Uhr.</li>
+        </ol>
+      </section>
+      <section>
+        <h3 id="settingsInfoDetectionTitle">Wie funktioniert die automatische Erkennung?</h3>
+        <p id="settingsInfoDetectionText">Nahe beieinanderliegende Startzeiten werden zu Gruppen zusammengefasst. Eine größere zeitliche Lücke deutet auf einen neuen Slot hin. Aus der Lage dieser Gruppen entstehen Bezeichnungen wie Vormittag, Nachmittag oder Abend sowie passende Grenzen zwischen den Zeitfenstern.</p>
+        <p id="settingsInfoDetectionStable">Die Schätzung wird nur einmal angelegt. Danach bleibt sie stabil, auch wenn später neue Sessions dazukommen. Im Setup kann sie jederzeit geprüft und korrigiert werden.</p>
+      </section>
+      <section>
+        <h3 id="settingsInfoParticipationTitle">Wie wird die Teilnehmendenplanung berechnet?</h3>
+        <p id="settingsInfoParticipationText">Sobald die Anmeldung geöffnet ist, wertet das Dashboard alle Personen mit Event-Freischaltung aus. Als sicher eingeplant gilt, wer innerhalb der Spielplatz-Kapazität einer RSVP-Liste liegt oder selbst eine Session anbietet. Eine Warteliste zählt nicht als sicher. „Vollständig verplant“ bedeutet, in jedem erkannten Programmslot bestätigt oder selbst anbietend zu sein; Sonderformate zählen dabei als persönliche Termine.</p>
+        <p class="settings-info-note" id="settingsInfoParticipationPrivacy">Öffentlich erscheinen ausschließlich zusammengefasste Zahlen, niemals Namen oder Kontaktdaten. Da Playabl keine individuellen Anwesenheitstage liefert, nimmt die Vollplanungsquote an, dass alle Event-Freigeschalteten grundsätzlich in allen Slots teilnehmen könnten.</p>
+      </section>
+      <section>
+        <h3 id="settingsInfoStorageTitle">Speicherung und erneute Ermittlung</h3>
+        <p id="settingsInfoStorageText">Manuell eingestellte oder automatisch erkannte Slots werden nur lokal in diesem Browser gespeichert. Sie verändern weder Playabl noch die Con-Raumplanung. <strong>„Slots neu ermitteln“</strong> entfernt die lokale Slot-Konfiguration und führt die Quellenlogik erneut aus: Raumplanung, automatische Erkennung und zuletzt der Standard-Fallback. Der Zielkorridor bleibt dabei unverändert.</p>
+      </section>
+    </div>
+  </div>
+</dialog>
+<dialog id="wordContextDlg" aria-labelledby="wordContextTitle">
+  <div class="slot-config-form">
+    <div class="slot-config-header">
+      <div>
+        <h2 id="wordContextTitle">Kontext</h2>
+        <p id="wordContextIntro">Zufällige Ausschnitte aus Rundenbeschreibungen.</p>
+      </div>
+      <button class="slot-config-close" id="wordContextClose" type="button" aria-label="Kontext schließen">×</button>
+    </div>
+    <div class="word-context-content">
+      <p class="word-context-meta" id="wordContextMeta"></p>
+      <div class="word-context-list" id="wordContextList"></div>
+    </div>
+    <div class="word-context-actions">
+      <button type="button" id="wordContextRefresh">Andere Ausschnitte</button>
+    </div>
+  </div>
+</dialog>
+<dialog id="sectionInfoDlg" aria-labelledby="sectionInfoTitle" aria-describedby="sectionInfoIntro">
+  <div class="slot-config-form">
+    <div class="slot-config-header">
+      <div>
+        <h2 id="sectionInfoTitle">Information</h2>
+        <p id="sectionInfoIntro"></p>
+      </div>
+      <button class="slot-config-close" id="sectionInfoClose" type="button" aria-label="Information schließen">×</button>
+    </div>
+    <div class="settings-info-content" id="sectionInfoContent"></div>
+  </div>
+</dialog>
+<script src="../punk-zine-quotes.js"></script>
+
+<script src="theme.js?v=20260728-3"></script>
+<script src="i18n.js?v=20260818-2"></script>
+<script src="config.js?v=20260818-1"></script>
+<script src="api.js?v=20260731-2"></script>
+<script src="calendar-export.js?v=20260816-1"></script>
+<script src="dashboard.js?v=20260818-1"></script>
+<script src="guided-tour.js?v=20260816-1"></script>
+</body>
+</html>

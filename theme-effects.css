@@ -1,0 +1,1110 @@
+@import url("themes.css?v=20260728-6");
+
+:root[data-theme="terminal"] body {
+  background-image: repeating-linear-gradient(180deg,
+    rgba(80,255,140,0.05) 0px, rgba(80,255,140,0.05) 1px, transparent 1px, transparent 3px);
+}
+
+:root[data-theme="terminal"] .card,
+:root[data-theme="terminal"] .room,
+:root[data-theme="terminal"] dialog {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--page), 0 0 0 4px var(--border), var(--shadow-card);
+}
+:root[data-theme="terminal"] ::selection { background: var(--accent); color: var(--accent-ink); }
+
+.brand-eyebrow, .brand-cursor { display: none; }
+:root[data-theme="terminal"] .brand-eyebrow, :root[data-theme="terminal"] .brand-cursor { display: inline-block; }
+:root[data-theme="terminal"] .brand-cursor { color: var(--accent); margin-left: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme="terminal"] .brand-cursor { animation: rp-cursor-blink 1s step-end infinite; }
+  @keyframes rp-cursor-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+  :root[data-theme="terminal"] body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background: linear-gradient(180deg, transparent 0%, rgba(80,255,140,0.05) 50%, transparent 100%);
+    background-size: 100% 220px;
+    animation: rp-scan-sweep 9s linear infinite, rp-crt-flicker 6s linear infinite;
+  }
+  @keyframes rp-scan-sweep { from { background-position: 0 -100vh; } to { background-position: 0 100vh; } }
+  @keyframes rp-crt-flicker { 0%, 96%, 100% { opacity: 1; } 97% { opacity: .85; } 98% { opacity: 1; } 99% { opacity: .9; } }
+}
+.pixel-cat { width: 22px; height: 22px; vertical-align: -6px; }
+.pixel-cat rect { fill: currentColor; }
+:root[data-theme="cyberpunk"] .card,
+:root[data-theme="cyberpunk"] .room,
+:root[data-theme="cyberpunk"] dialog {
+
+  border-color: rgba(0,240,255,.35);
+  box-shadow: 0 0 0 1px rgba(0,240,255,.18), 0 0 14px -4px rgba(255,47,208,.35);
+}
+:root[data-theme="cyberpunk"] ::selection { background: var(--accent); color: var(--accent-ink); }
+:root[data-theme="cyberpunk"] h1, :root[data-theme="cyberpunk"] h2 { text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent); }
+/* Statische Neon-Akzente vermeiden ablenkendes Dauerpulsieren. */
+:root[data-theme="cyberpunk"] .app-header .page-tabs [aria-pressed="true"],
+:root[data-theme="cyberpunk"] #viewTabs [aria-pressed="true"],
+:root[data-theme="cyberpunk"] .crew-nav [aria-pressed="true"] {
+  text-shadow: 0 0 8px rgba(0,240,255,.38);
+}
+:root[data-theme="cyberpunk"] .chip.ws,
+:root[data-theme="cyberpunk"] button.primary {
+  box-shadow: 0 0 0 1px rgba(0,240,255,.22), 0 0 14px -8px rgba(255,47,208,.55);
+}
+@media (hover: hover) {
+  :root[data-theme="cyberpunk"] button.primary:hover,
+  :root[data-theme="cyberpunk"] a.btn.primary:hover {
+    box-shadow: 0 0 0 1px rgba(0,240,255,.34), 0 0 18px -7px rgba(255,47,208,.68);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+
+  :root[data-theme="cyberpunk"] h1 {
+    animation: glitchFlicker 4s steps(2, end) infinite;
+  }
+  @keyframes glitchFlicker {
+    0%, 78%, 100% { text-shadow: 0 0 12px rgba(0,240,255,.5); transform: translate(0,0); }
+    80% { text-shadow: -3px 0 rgba(255,47,208,.9), 3px 0 rgba(0,240,255,.9); transform: translate(-3px,1px); }
+    84% { text-shadow: 3px 0 rgba(255,47,208,.9), -3px 0 rgba(0,240,255,.9); transform: translate(3px,-1px); }
+    88% { text-shadow: -2px 0 rgba(255,47,208,.9), 2px 0 rgba(0,240,255,.9); transform: translate(2px,0); }
+    92% { text-shadow: 0 0 12px rgba(0,240,255,.5); transform: translate(0,0); }
+  }
+}
+:root[data-theme="ukiyo"] .card,
+:root[data-theme="ukiyo"] .room,
+:root[data-theme="ukiyo"] .chip,
+:root[data-theme="ukiyo"] .kpi-bar .kpi {
+  border-width: 1px;
+}
+:root[data-theme="ukiyo"] .room { border-top-width: 2px; }
+:root[data-theme="ukiyo"] ::selection { background: var(--accent-soft); color: var(--text-primary); }
+/* Hintergrundbild sehr dezent (~5%) durchscheinen lassen: eine fast
+   deckende Wash-Farbe aus dem Theme selbst liegt als erster Layer über
+   dem Bild, statt mit einem separaten opacity-Element zu arbeiten. */
+:root[data-theme="ukiyo"] body {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--page) 95%, transparent), color-mix(in srgb, var(--page) 95%, transparent)),
+    var(--ukiyo-bg, none);
+  background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+}
+:root[data-theme="solarpunk"] body {
+  position: relative;
+  isolation: isolate;
+  background-image:
+    radial-gradient(circle at 96% -4%, rgba(244,190,72,.34) 0, rgba(244,190,72,.13) 12%, transparent 31%),
+    repeating-conic-gradient(from 205deg at 98% 0%, rgba(221,161,45,.045) 0deg 7deg, transparent 7deg 17deg),
+    radial-gradient(ellipse 34% 24% at 3% 18%, rgba(101,164,84,.20), transparent 72%),
+    radial-gradient(ellipse 28% 34% at 100% 88%, rgba(201,101,56,.12), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(40,100,65,.026) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(0deg, rgba(40,100,65,.022) 0 1px, transparent 1px 72px);
+  background-attachment: fixed;
+}
+:root[data-theme="solarpunk"] body::before,
+:root[data-theme="solarpunk"] body::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  left: -42vw;
+  width: clamp(420px, 42vw, 720px);
+  height: clamp(120px, 15vw, 220px);
+  pointer-events: none;
+  opacity: .44;
+  /* Große, überlappende Farbstopps bleiben auch bei langsamer Skalierung weich. */
+  filter: blur(11px);
+  background:
+    radial-gradient(ellipse at 17% 67%, rgba(255,255,255,.92) 0 24%, rgba(195,226,228,.44) 43%, transparent 67%),
+    radial-gradient(ellipse at 34% 48%, rgba(255,255,255,.95) 0 31%, rgba(195,226,228,.46) 52%, transparent 75%),
+    radial-gradient(ellipse at 54% 58%, rgba(255,255,255,.95) 0 35%, rgba(195,226,228,.44) 56%, transparent 78%),
+    radial-gradient(ellipse at 73% 70%, rgba(255,255,255,.91) 0 27%, rgba(195,226,228,.40) 47%, transparent 70%);
+}
+:root[data-theme="solarpunk"] body > .wrap {
+  position: relative;
+  z-index: 1;
+}
+:root[data-theme="solarpunk"] body::before {
+  top: var(--solar-cloud-y-1, 18vh);
+  animation: rp-solar-cloud-1 var(--solar-cloud-duration-1, 230s) linear var(--solar-cloud-delay-1, -80s) infinite;
+}
+:root[data-theme="solarpunk"] body::after {
+  top: var(--solar-cloud-y-2, 54vh);
+  opacity: .27;
+  filter: blur(15px);
+  animation: rp-solar-cloud-2 var(--solar-cloud-duration-2, 300s) linear var(--solar-cloud-delay-2, -150s) infinite;
+}
+@keyframes rp-solar-cloud-1 {
+  from { transform: translate3d(0,0,0) scale(var(--solar-cloud-scale-1, .9)); }
+  to { transform: translate3d(170vw,0,0) scale(var(--solar-cloud-scale-1, .9)); }
+}
+@keyframes rp-solar-cloud-2 {
+  from { transform: translate3d(0,0,0) scale(var(--solar-cloud-scale-2, .72)); }
+  to { transform: translate3d(176vw,0,0) scale(var(--solar-cloud-scale-2, .72)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="solarpunk"] body::before,
+  :root[data-theme="solarpunk"] body::after { display: none; }
+}
+:root[data-theme="solarpunk"] ::selection { background: #f4c75d; color: var(--text-primary); }
+:root[data-theme="solarpunk"] .card,
+:root[data-theme="solarpunk"] .room,
+:root[data-theme="solarpunk"] .kpi-bar .kpi,
+:root[data-theme="solarpunk"] dialog {
+  border-color: rgba(37,83,43,.22);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.38), transparent 42%);
+}
+:root[data-theme="solarpunk"] .app-header .page-tabs [aria-pressed="true"] {
+  background: linear-gradient(135deg, var(--surface-1), color-mix(in srgb, var(--accent-soft) 72%, var(--surface-1)));
+}
+:root[data-theme="solarpunk"] .plan-page .public-toolbar {
+  background-color: color-mix(in srgb, var(--surface-1) 88%, var(--accent-soft));
+}
+:root[data-theme="solarpunk"] .plan-page .toolbar-label {
+  color: color-mix(in srgb, var(--accent) 78%, var(--text-muted));
+}
+:root[data-theme="solarpunk"] .plan-page .grid-cell {
+  background: color-mix(in srgb, var(--surface-2) 88%, var(--surface-1));
+  box-shadow: inset 0 0 0 1px rgba(40,100,65,.055);
+}
+:root[data-theme="solarpunk"] .plan-page .room-swatch {
+  width: 4px;
+  border-radius: 80% 18% 80% 18%;
+}
+:root[data-theme="solarpunk"] .plan-page #pageTitleCard h1::after,
+:root[data-theme="solarpunk"] .landing-page .hero-wrap h1::after {
+  content: "";
+  display: inline-block;
+  width: .52em;
+  height: .52em;
+  margin-left: .38em;
+  border-radius: 82% 14% 82% 14%;
+  background: linear-gradient(145deg, #78ad55, var(--accent));
+  box-shadow: 7px -6px 0 -3px rgba(244,190,72,.78);
+  transform: rotate(-23deg);
+  vertical-align: .04em;
+}
+:root[data-theme="solarpunk"] button.primary,
+:root[data-theme="solarpunk"] a.btn.primary {
+  background: linear-gradient(135deg, var(--accent), #3c8d55);
+  box-shadow: 0 8px 18px -12px rgba(40,100,65,.7);
+}
+:root[data-theme="glass"] body {
+  background-color: var(--page);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(64,174,255,.42), transparent 31%),
+    radial-gradient(circle at 88% 12%, rgba(173,105,255,.35), transparent 32%),
+    radial-gradient(circle at 72% 88%, rgba(31,216,177,.23), transparent 38%),
+    linear-gradient(145deg, #091120 0%, #10162b 48%, #09101d 100%);
+  background-attachment: fixed;
+}
+:root[data-theme="glass"] .app-header {
+  background: rgba(10,16,32,.52);
+  border-bottom-color: rgba(255,255,255,.16);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  backdrop-filter: blur(24px) saturate(145%);
+}
+:root[data-theme="glass"] .card,
+:root[data-theme="glass"] .room,
+:root[data-theme="glass"] .kpi-bar .kpi,
+:root[data-theme="glass"] .controls,
+:root[data-theme="glass"] .controls-group,
+:root[data-theme="glass"] .next-con-card,
+:root[data-theme="glass"] dialog,
+:root[data-theme="glass"] .theme-more-popover {
+  background-color: var(--surface-1);
+  background-image: linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.025) 48%, rgba(255,255,255,.06));
+  border-color: rgba(255,255,255,.20);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+}
+:root[data-theme="glass"] input,
+:root[data-theme="glass"] textarea,
+:root[data-theme="glass"] select {
+  background: rgba(6,12,25,.38);
+  border-color: rgba(255,255,255,.20);
+}
+:root[data-theme="glass"] .slot-tabs [aria-pressed="true"],
+:root[data-theme="glass"] .theme-more-row[aria-pressed="true"] {
+  background: rgba(255,255,255,.17);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 12px 26px -18px rgba(0,0,0,.8);
+}
+:root[data-theme="glass"] .plan-page .grid-cell {
+  background: rgba(255,255,255,.065);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+:root[data-theme="glass"] .plan-page .grid-cell .grid-chip,
+:root[data-theme="glass"] .plan-page #viewContent .room-public-chip {
+  background: rgba(8,15,31,.36);
+  border: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 12px 26px -24px rgba(0,0,0,.82);
+}
+:root[data-theme="glass"] .plan-page #viewContent .tablebox {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+:root[data-theme="glass"] .plan-page #viewContent .tablebox .free {
+  border-color: rgba(255,255,255,.12);
+  background: rgba(8,15,31,.22);
+}
+:root[data-theme="glass"] button.primary,
+:root[data-theme="glass"] a.btn.primary {
+  background: linear-gradient(135deg, rgba(181,239,255,.98), rgba(142,231,255,.78));
+  box-shadow: 0 12px 28px -15px rgba(110,220,255,.75), inset 0 1px 0 rgba(255,255,255,.72);
+}
+:root[data-theme="punk"] body {
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  background-color: var(--page);
+  background-image:
+    linear-gradient(104deg, transparent 0 61%, rgba(0,87,255,.22) 61% 79%, transparent 79%),
+    linear-gradient(-7deg, transparent 0 72%, rgba(255,61,0,.18) 72% 88%, transparent 88%),
+    repeating-linear-gradient(90deg, rgba(11,11,11,.12) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(0deg, rgba(11,11,11,.12) 0 1px, transparent 1px 48px);
+  background-attachment: fixed;
+}
+:root[data-theme="punk"] body::before {
+  content: "CON // RAUM // PLAN";
+  position: fixed;
+  z-index: 0;
+  top: 18vh;
+  left: -6vw;
+  width: 118vw;
+  pointer-events: none;
+  color: rgba(0,87,255,.17);
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: clamp(6rem, 17vw, 19rem);
+  font-weight: 1000;
+  line-height: .7;
+  letter-spacing: -.1em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  white-space: nowrap;
+}
+:root[data-theme="punk"] body::after {
+  content: none;
+}
+.punk-zine-banner {
+  position: fixed;
+  z-index: 3;
+  right: -12vw;
+  bottom: 1.2rem;
+  width: 124vw;
+  padding: 7px 0 6px;
+  border-block: 3px solid #0b0b0b;
+  background: var(--accent-soft);
+  color: #0b0b0b;
+  font: 1000 clamp(.66rem, 1.05vw, .98rem)/1 "Arial Black", Arial, sans-serif;
+  letter-spacing: .03em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(1.4deg);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.punk-zine-banner a { color: inherit; text-decoration: none; }
+:root[data-theme="punk"] body > .wrap,
+:root[data-theme="punk"] .app-header {
+  position: relative;
+  z-index: 1;
+}
+:root[data-theme="punk"] .app-header {
+  background: #0b0b0b;
+  border-bottom: 12px solid #0057ff;
+  backdrop-filter: none;
+}
+:root[data-theme="punk"] .app-header .brand {
+  padding: 4px 9px;
+  background: var(--accent);
+  color: #fff;
+  transform: rotate(-2deg);
+}
+:root[data-theme="punk"] .app-header .page-tabs.slot-tabs { background: var(--accent-soft); }
+:root[data-theme="punk"] .card,
+:root[data-theme="punk"] .room,
+:root[data-theme="punk"] .kpi-bar .kpi,
+:root[data-theme="punk"] .next-con-card,
+:root[data-theme="punk"] dialog {
+  border-color: #0b0b0b;
+  box-shadow: none;
+}
+:root[data-theme="punk"] h1,
+:root[data-theme="punk"] h2,
+:root[data-theme="punk"] .brand {
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+}
+:root[data-theme="punk"] h1 {
+  display: inline-block;
+  max-width: min(100%, 18ch);
+  padding: 7px 16px 9px;
+  background: #0b0b0b;
+  color: #fff;
+  box-shadow: 18px 0 0 var(--accent), -9px 9px 0 #0057ff;
+  font-size: clamp(2.3rem, 7vw, 6.8rem) !important;
+  line-height: .82 !important;
+  text-shadow: none;
+  transform: rotate(-1.5deg) skewX(-4deg);
+}
+:root[data-theme="punk"] h2 {
+  display: inline;
+  background: var(--accent-soft);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 1px 5px;
+  color: #0b0b0b;
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+:root[data-theme="punk"] .sub {
+  display: table;
+  margin-top: 14px;
+  padding: 5px 8px;
+  background: #0057ff;
+  color: #fff;
+  font-weight: 900;
+  transform: rotate(.7deg);
+}
+:root[data-theme="punk"] .app-header .page-tabs [aria-pressed="true"] {
+  background: #111;
+  color: var(--accent-soft);
+  box-shadow: none;
+  transform: none;
+}
+:root[data-theme="punk"] .plan-page .public-view-tabs button[aria-pressed="true"],
+:root[data-theme="punk"] .crew-nav button[aria-pressed="true"] {
+  border-bottom-color: #0b0b0b;
+  background: var(--accent);
+  color: #fff;
+}
+:root[data-theme="punk"] .plan-page .public-view-tabs {
+  border-bottom: 4px solid #0b0b0b;
+  gap: 10px;
+  transform: rotate(-.35deg);
+}
+:root[data-theme="punk"] .plan-page .public-view-tabs button {
+  padding-inline: 12px;
+  text-transform: uppercase;
+}
+:root[data-theme="punk"] .plan-page .public-toolbar {
+  border-top: 12px solid #0057ff;
+  border-bottom: 5px solid #0b0b0b;
+  transform: rotate(.35deg);
+}
+:root[data-theme="punk"] .landing-page .next-con-card {
+  border-left: 18px solid #0057ff;
+  transform: rotate(-.55deg);
+}
+:root[data-theme="punk"] .landing-page .con-directory {
+  border-top: 12px solid var(--accent);
+  transform: rotate(.4deg);
+}
+:root[data-theme="punk"] .landing-page .con-directory .card:nth-child(odd),
+:root[data-theme="punk"] .plan-page #viewContent .room:nth-child(odd) {
+  transform: rotate(-.35deg);
+}
+:root[data-theme="punk"] .landing-page .con-directory .card:nth-child(even),
+:root[data-theme="punk"] .plan-page #viewContent .room:nth-child(even) {
+  transform: rotate(.35deg);
+}
+:root[data-theme="punk"] .plan-page .matrix-label,
+:root[data-theme="punk"] .badge {
+  border: 2px solid #0b0b0b;
+  border-radius: 0;
+  background: #0b0b0b;
+  color: #fff;
+  text-transform: uppercase;
+}
+:root[data-theme="punk"] .plan-page .grid-cell {
+  border-radius: 0;
+  background: #bdbdb6;
+  box-shadow: inset 0 0 0 2px #0b0b0b;
+}
+:root[data-theme="punk"] .plan-page .grid-cell .grid-chip {
+  border: 2px solid #0b0b0b;
+  border-left: 8px solid #0057ff;
+  border-radius: 0;
+  background: #f5f4ed;
+  transition: transform .12s steps(2,end), background-color .12s linear, box-shadow .12s linear;
+}
+:root[data-theme="punk"] .plan-page .room-swatch {
+  width: 6px;
+  border-radius: 0;
+}
+:root[data-theme="punk"] .plan-page #axisSwitch button[aria-pressed="true"],
+:root[data-theme="punk"] .plan-page #detailSwitch button[aria-pressed="true"] {
+  border-bottom: 4px solid var(--accent);
+}
+:root[data-theme="punk"] .toolbar-label {
+  color: #0b0b0b;
+  font-weight: 900;
+}
+:root[data-theme="punk"] button.primary,
+:root[data-theme="punk"] a.btn.primary {
+  border-color: #0b0b0b;
+  background: var(--accent);
+  box-shadow: 6px 6px 0 #0b0b0b;
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+:root[data-theme="punk"] button.primary:hover,
+:root[data-theme="punk"] a.btn.primary:hover,
+:root[data-theme="punk"] .plan-page .grid-cell .grid-chip:hover {
+  background: var(--accent-soft);
+  color: #0b0b0b;
+  box-shadow: 9px 9px 0 #0057ff;
+  transform: translate(-3px,-3px) rotate(-1deg);
+}
+:root[data-theme="punk"] button.primary:active,
+:root[data-theme="punk"] a.btn.primary:active {
+  transform: translate(1px,1px);
+  box-shadow: 2px 2px 0 #0b0b0b;
+}
+:root[data-theme="punk"] ::selection {
+  background: var(--accent-soft);
+  color: #0b0b0b;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-theme="punk"] body::before {
+    animation: rp-punk-poster-drift 22s steps(7,end) infinite alternate;
+  }
+  :root[data-theme="punk"] body::after {
+    animation: rp-punk-tape-shove 16s steps(4,end) infinite alternate;
+  }
+  :root[data-theme="punk"] h1 {
+    animation: rp-punk-title-jolt 8s steps(1,end) infinite;
+  }
+}
+@keyframes rp-punk-poster-drift {
+  0% { transform: translate3d(-3vw,-2vh,0) rotate(-8deg); }
+  48% { transform: translate3d(4vw,5vh,0) rotate(-5deg); }
+  100% { transform: translate3d(-1vw,11vh,0) rotate(-10deg); }
+}
+@keyframes rp-punk-tape-shove {
+  0%, 67% { transform: translate3d(0,0,0) rotate(1.4deg); }
+  68%, 83% { transform: translate3d(-4vw,-5px,0) rotate(-1.2deg); }
+  84%, 100% { transform: translate3d(3vw,2px,0) rotate(2deg); }
+}
+@keyframes rp-punk-title-jolt {
+  0%, 76%, 80%, 100% { transform: rotate(-1.5deg) skewX(-4deg); }
+  77% { transform: translate(-5px,2px) rotate(1deg) skewX(3deg); }
+  79% { transform: translate(4px,-2px) rotate(-3deg) skewX(-7deg); }
+}
+
+:root[data-theme="vienna"] body {
+  background-color: var(--page);
+  background-image:
+    radial-gradient(circle at 42px 42px, transparent 0 31px, rgba(176,138,53,.075) 31.5px 32.5px, transparent 33px),
+    radial-gradient(circle at 0 0, rgba(36,84,67,.045) 0 2px, transparent 2.5px),
+    linear-gradient(115deg, rgba(255,250,240,.78), rgba(240,234,220,.9));
+  background-size: 84px 84px, 42px 42px, auto;
+  background-attachment: fixed;
+}
+:root[data-theme="vienna"] .app-header {
+  overflow: visible;
+  border-bottom: 4px double var(--vienna-gold);
+  background: color-mix(in srgb, var(--surface-1) 97%, transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+:root[data-theme="vienna"] .app-header::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: -8px;
+  left: 24px;
+  height: 12px;
+  background:
+    radial-gradient(circle, var(--vienna-gold) 0 2px, transparent 2.5px) center / 12px 12px repeat-x;
+  pointer-events: none;
+}
+:root[data-theme="vienna"] .card,
+:root[data-theme="vienna"] .room,
+:root[data-theme="vienna"] .kpi-bar .kpi,
+:root[data-theme="vienna"] .controls,
+:root[data-theme="vienna"] .controls-group,
+:root[data-theme="vienna"] .next-con-card,
+:root[data-theme="vienna"] dialog {
+  border: 1px solid var(--vienna-gold);
+  background-color: var(--surface-1);
+  border-radius: 22px 22px 5px 5px;
+  box-shadow:
+    inset 0 0 0 4px var(--surface-1),
+    inset 0 0 0 5px color-mix(in srgb, var(--vienna-gold) 58%, transparent),
+    0 12px 32px rgba(50,43,29,.08);
+}
+:root[data-theme="vienna"] .landing-page .hero-wrap,
+:root[data-theme="vienna"] .plan-page #pageTitleCard {
+  position: relative;
+  isolation: isolate;
+  min-height: 220px;
+  padding: clamp(28px, 5vw, 58px) clamp(36px, 7vw, 88px);
+  overflow: hidden;
+  border: 1px solid var(--vienna-gold);
+  border-radius: clamp(56px, 11vw, 140px) clamp(56px, 11vw, 140px) 8px 8px;
+  background: var(--surface-1);
+  box-shadow:
+    inset 0 0 0 6px var(--surface-1),
+    inset 0 0 0 7px color-mix(in srgb, var(--vienna-gold) 64%, transparent);
+}
+:root[data-theme="vienna"] .landing-page .hero-wrap::after,
+:root[data-theme="vienna"] .plan-page #pageTitleCard::after {
+  content: "";
+  position: absolute;
+  top: clamp(48px, 24%, 86px);
+  bottom: 9px;
+  left: 8px;
+  width: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 96%, black);
+  pointer-events: none;
+}
+:root[data-theme="vienna"] .landing-page .hero-wrap::before,
+:root[data-theme="vienna"] .plan-page #pageTitleCard::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: clamp(18px, 5vw, 70px);
+  width: clamp(130px, 22vw, 260px);
+  aspect-ratio: 1;
+  color: var(--vienna-gold);
+  background: currentColor;
+  opacity: .14;
+  -webkit-mask: var(--vienna-rosette-mask) center / contain no-repeat;
+  mask: var(--vienna-rosette-mask) center / contain no-repeat;
+  transform: translateY(-50%);
+}
+:root[data-theme="vienna"] .landing-page .hero-wrap h1,
+:root[data-theme="vienna"] .plan-page #pageTitleCard h1 {
+  position: relative;
+  max-width: 12ch;
+  padding-left: .08em;
+  font-size: clamp(3.4rem, 8vw, 7rem);
+  line-height: .83;
+}
+:root[data-theme="vienna"] .landing-page .hero-wrap h1::after,
+:root[data-theme="vienna"] .plan-page #pageTitleCard h1::after {
+  content: "";
+  display: inline-block;
+  width: .19em;
+  height: .19em;
+  margin-left: .16em;
+  border: .04em solid var(--surface-1);
+  outline: .02em solid var(--vienna-gold);
+  border-radius: 50%;
+  background: var(--vienna-gold);
+  vertical-align: .13em;
+}
+:root[data-theme="vienna"] .app-header .page-tabs.slot-tabs {
+  padding: 4px;
+  border: 1px solid var(--vienna-gold);
+  border-radius: 999px;
+  background: var(--surface-1);
+  box-shadow: inset 0 0 0 2px var(--surface-1), inset 0 0 0 3px color-mix(in srgb, var(--vienna-gold) 48%, transparent);
+}
+:root[data-theme="vienna"] .app-header .page-tabs.slot-tabs a,
+:root[data-theme="vienna"] .app-header .page-tabs.slot-tabs button {
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .055em;
+}
+:root[data-theme="vienna"] .app-header .page-tabs [aria-pressed="true"],
+:root[data-theme="vienna"] .public-view-tabs button[aria-pressed="true"],
+:root[data-theme="vienna"] .crew-nav button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: none;
+}
+:root[data-theme="vienna"] .landing-page .next-con-card {
+  background:
+    radial-gradient(circle at 88% 18%, rgba(176,138,53,.16) 0 52px, transparent 53px),
+    var(--surface-1);
+}
+:root[data-theme="vienna"] .landing-page .con-directory {
+  border-top: 4px double var(--vienna-gold);
+}
+:root[data-theme="vienna"] .plan-page .public-toolbar {
+  position: relative;
+  border: 1px solid var(--vienna-gold);
+  border-radius: 28px 28px 5px 5px;
+  background:
+    radial-gradient(circle at 16px 16px, rgba(176,138,53,.09) 0 9px, transparent 9.5px) 0 0 / 32px 32px,
+    var(--surface-1);
+  box-shadow: inset 0 0 0 4px var(--surface-1), inset 0 0 0 5px rgba(176,138,53,.4);
+}
+:root[data-theme="vienna"] .toolbar-label {
+  color: var(--accent);
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+:root[data-theme="vienna"] .plan-page .grid-cell {
+  border-radius: 16px 16px 3px 3px;
+  background:
+    radial-gradient(circle at 50% 100%, transparent 0 15px, rgba(176,138,53,.07) 15.5px 16.5px, transparent 17px) 0 0 / 44px 22px,
+    color-mix(in srgb, var(--surface-2) 74%, var(--surface-1));
+  box-shadow: inset 0 0 0 1px rgba(176,138,53,.28);
+}
+:root[data-theme="vienna"] .plan-page .grid-cell .grid-chip,
+:root[data-theme="vienna"] .plan-page #viewContent .room-public-chip {
+  border: 1px solid color-mix(in srgb, var(--room-accent, var(--accent)) 80%, var(--text-primary));
+  border-left: 3px solid var(--room-accent, var(--accent));
+  border-radius: 12px 12px 3px 3px;
+  background: var(--surface-1);
+  box-shadow: 0 4px 12px rgba(50,43,29,.08);
+}
+:root[data-theme="vienna"] .plan-page .room-swatch {
+  width: 7px;
+  border-radius: 999px 999px 2px 2px;
+}
+:root[data-theme="vienna"] input,
+:root[data-theme="vienna"] textarea,
+:root[data-theme="vienna"] select,
+:root[data-theme="vienna"] button,
+:root[data-theme="vienna"] a.btn {
+  border-radius: 999px;
+}
+:root[data-theme="vienna"] button.primary,
+:root[data-theme="vienna"] a.btn.primary {
+  border: 1px solid var(--vienna-gold);
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 0 3px rgba(255,250,240,.64);
+}
+:root[data-theme="vienna"] .badge,
+:root[data-theme="vienna"] .matrix-label {
+  border-radius: 999px;
+}
+:root[data-theme="vienna"] ::selection {
+  background: var(--band);
+  color: var(--text-primary);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :root[data-theme="vienna"] .card,
+  :root[data-theme="vienna"] .room,
+  :root[data-theme="vienna"] .grid-chip,
+  :root[data-theme="vienna"] button.primary,
+  :root[data-theme="vienna"] a.btn.primary {
+    transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+  }
+  :root[data-theme="vienna"] .card:hover,
+  :root[data-theme="vienna"] .room:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 0 0 4px var(--surface-1),
+      inset 0 0 0 5px color-mix(in srgb, var(--vienna-gold) 70%, transparent),
+      0 16px 38px rgba(50,43,29,.13);
+  }
+  :root[data-theme="vienna"] .grid-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(50,43,29,.13);
+  }
+}
+:root[data-zen][data-theme="vienna"] .card:hover,
+:root[data-zen][data-theme="vienna"] .room:hover,
+:root[data-zen][data-theme="vienna"] .grid-chip:hover {
+  transform: none !important;
+}
+
+:root[data-theme="comic"] body {
+  background-image:
+    radial-gradient(circle, rgba(24,20,24,.14) 1.7px, transparent 1.7px),
+    linear-gradient(color-mix(in srgb, var(--page) 94%, transparent), color-mix(in srgb, var(--page) 94%, transparent)),
+    var(--comic-bg, none);
+  background-size: 16px 16px, cover, cover;
+  background-position: 0 0, center, center;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-attachment: fixed, fixed, fixed;
+  background-blend-mode: normal, normal, luminosity;
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+:root[data-zen] *, :root[data-zen] *::before, :root[data-zen] *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition: none !important;
+}
+:root[data-zen] .card:hover,
+:root[data-zen] .room:hover,
+:root[data-zen] .chip:not(.dragging):hover,
+:root[data-zen] .kpi-bar .kpi:hover,
+:root[data-zen] .con-card:hover,
+:root[data-zen] .req:hover,
+:root[data-zen] .next-con-card:hover,
+:root[data-zen] .grid-chip:hover,
+:root[data-zen] .guided-tour-choice:hover,
+:root[data-zen] button:not(.small):not(.icon-btn):hover,
+:root[data-zen] a.btn:not(.small):hover,
+:root[data-zen] .theme-switch button:hover,
+:root[data-zen] .lang-switch-flat button:hover,
+:root[data-zen] .theme-more-trigger:hover,
+:root[data-zen] button.has-avatar:hover {
+  transform: none !important;
+}
+:root[data-zen][data-theme="solarpunk"] body::before,
+:root[data-zen][data-theme="solarpunk"] body::after,
+:root[data-zen][data-theme="terminal"] body::after { display: none !important; }
+
+/* Dark Cosmic keeps the shared palette here and gives the room planner its own spatial treatment. */
+:root[data-theme="cosmic"] body {
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 78% -8%,color-mix(in srgb,var(--cosmic-nebula-blue) 23%,transparent),transparent 39%),
+    radial-gradient(ellipse at 5% 52%,color-mix(in srgb,var(--cosmic-nebula-teal) 18%,transparent),transparent 34%),
+    radial-gradient(ellipse at 96% 68%,color-mix(in srgb,var(--cosmic-nebula-rose) 12%,transparent),transparent 32%),
+    radial-gradient(ellipse at 28% 108%,color-mix(in srgb,var(--cosmic-nebula-ember) 7%,transparent),transparent 35%),
+    linear-gradient(165deg,#010207 0%,#030510 46%,#010207 100%);
+}
+:root[data-theme="cosmic"] body::before,
+:root[data-theme="cosmic"] body::after {
+  content:"";
+  position:fixed;
+  z-index:-1;
+  pointer-events:none;
+}
+:root[data-theme="cosmic"] body::before {
+  inset:-42%;
+  background:
+    radial-gradient(ellipse at 34% 54%,color-mix(in srgb,var(--cosmic-nebula-rose) 15%,transparent) 0 5%,transparent 31%),
+    radial-gradient(ellipse at 63% 43%,color-mix(in srgb,var(--cosmic-nebula-blue) 19%,transparent) 0 6%,transparent 34%),
+    radial-gradient(ellipse at 73% 61%,color-mix(in srgb,var(--cosmic-nebula-teal) 13%,transparent) 0 4%,transparent 28%),
+    radial-gradient(ellipse at 48% 57%,rgba(205,216,255,.11) 0 3%,rgba(87,75,164,.1) 17%,transparent 39%),
+    linear-gradient(102deg,transparent 34%,rgba(64,85,147,.04) 41%,rgba(177,191,235,.13) 48%,rgba(138,63,120,.09) 54%,rgba(33,109,118,.06) 59%,transparent 66%);
+  filter:blur(42px) saturate(1.18);
+  transform:rotate(-17deg) scale(1.06);
+  will-change:transform,opacity;
+  animation:
+    room-cosmic-milky-way 34s linear infinite alternate,
+    room-cosmic-nebula-breathe 9s ease-in-out infinite alternate;
+}
+:root[data-theme="cosmic"] body::after {
+  inset:-14%;
+  opacity:.66;
+  background:center/100% 100% no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 900'%3E%3Cg fill='%23f0f2ff'%3E%3Ccircle cx='37' cy='83' r='1.2'/%3E%3Ccircle cx='181' cy='31' r='.8'/%3E%3Ccircle cx='298' cy='147' r='1.5'/%3E%3Ccircle cx='463' cy='68' r='.7'/%3E%3Ccircle cx='617' cy='192' r='1'/%3E%3Ccircle cx='811' cy='43' r='1.3'/%3E%3Ccircle cx='967' cy='161' r='.65'/%3E%3Ccircle cx='1179' cy='91' r='1.1'/%3E%3Ccircle cx='1361' cy='218' r='.8'/%3E%3Ccircle cx='112' cy='329' r='.7'/%3E%3Ccircle cx='349' cy='287' r='1.25'/%3E%3Ccircle cx='538' cy='401' r='.8'/%3E%3Ccircle cx='731' cy='311' r='1.6'/%3E%3Ccircle cx='904' cy='438' r='.7'/%3E%3Ccircle cx='1083' cy='296' r='1.15'/%3E%3Ccircle cx='1297' cy='397' r='.75'/%3E%3Ccircle cx='59' cy='573' r='1.35'/%3E%3Ccircle cx='247' cy='493' r='.7'/%3E%3Ccircle cx='421' cy='642' r='1'/%3E%3Ccircle cx='684' cy='526' r='.65'/%3E%3Ccircle cx='849' cy='681' r='1.4'/%3E%3Ccircle cx='1017' cy='557' r='.75'/%3E%3Ccircle cx='1244' cy='634' r='1.1'/%3E%3Ccircle cx='1379' cy='519' r='.65'/%3E%3Ccircle cx='151' cy='812' r='.8'/%3E%3Ccircle cx='376' cy='739' r='1.2'/%3E%3Ccircle cx='593' cy='857' r='.7'/%3E%3Ccircle cx='776' cy='763' r='1.1'/%3E%3Ccircle cx='996' cy='839' r='.8'/%3E%3Ccircle cx='1191' cy='748' r='1.35'/%3E%3Ccircle cx='1342' cy='866' r='.7'/%3E%3C/g%3E%3Cg fill='%2397b7ff' opacity='.72'%3E%3Ccircle cx='226' cy='219' r='1.1'/%3E%3Ccircle cx='572' cy='103' r='1.4'/%3E%3Ccircle cx='876' cy='247' r='.9'/%3E%3Ccircle cx='1221' cy='331' r='1.3'/%3E%3Ccircle cx='318' cy='568' r='1.2'/%3E%3Ccircle cx='756' cy='617' r='.9'/%3E%3Ccircle cx='1108' cy='714' r='1.45'/%3E%3C/g%3E%3Cg fill='%23d9b876' opacity='.58'%3E%3Ccircle cx='91' cy='191' r='.9'/%3E%3Ccircle cx='657' cy='367' r='1.1'/%3E%3Ccircle cx='1322' cy='111' r='.8'/%3E%3Ccircle cx='489' cy='798' r='1.25'/%3E%3C/g%3E%3C/svg%3E");
+  will-change:transform,opacity;
+  animation:
+    room-cosmic-star-drift 72s ease-in-out infinite alternate,
+    room-cosmic-star-pulse 7s ease-in-out infinite alternate;
+}
+@keyframes room-cosmic-milky-way {
+  from { transform:translate3d(-4%,-2%,0) rotate(-19deg) scale(1.04); }
+  to { transform:translate3d(5%,3%,0) rotate(-13deg) scale(1.12); }
+}
+@keyframes room-cosmic-star-drift {
+  from { transform:translate3d(-2.4%,-1.2%,0) scale(1.015) rotate(-.18deg); }
+  to { transform:translate3d(2.8%,1.7%,0) scale(1.045) rotate(.2deg); }
+}
+@keyframes room-cosmic-nebula-breathe {
+  from { opacity:.62; }
+  to { opacity:1; }
+}
+@keyframes room-cosmic-star-pulse {
+  from { opacity:.48; filter:brightness(.86); }
+  to { opacity:.78; filter:brightness(1.18); }
+}
+@keyframes room-cosmic-nebula-orbits {
+  from {
+    background-position:86% -12%, -12% 31%, 112% 72%, center;
+    background-size:74% 66%, 61% 72%, 69% 62%, auto;
+  }
+  to {
+    background-position:68% 3%, 7% 48%, 87% 51%, center;
+    background-size:82% 73%, 68% 65%, 76% 70%, auto;
+  }
+}
+:root[data-theme="cosmic"] body.landing-page {
+  background:
+    radial-gradient(ellipse at 82% -10%,color-mix(in srgb,var(--cosmic-nebula-rose) 17%,transparent),transparent 38%),
+    radial-gradient(ellipse at 4% 58%,color-mix(in srgb,var(--cosmic-nebula-blue) 20%,transparent),transparent 35%),
+    radial-gradient(ellipse at 72% 105%,color-mix(in srgb,var(--cosmic-nebula-teal) 14%,transparent),transparent 34%),
+    linear-gradient(172deg,#010207 0%,#040411 45%,#010207 100%);
+  background-repeat:no-repeat;
+  animation:room-cosmic-nebula-orbits 37s ease-in-out infinite alternate-reverse;
+}
+:root[data-theme="cosmic"] body.landing-page::before {
+  background:
+    radial-gradient(ellipse at 62% 38%,color-mix(in srgb,var(--cosmic-nebula-rose) 17%,transparent) 0 5%,transparent 31%),
+    radial-gradient(ellipse at 39% 59%,color-mix(in srgb,var(--cosmic-nebula-blue) 20%,transparent) 0 6%,transparent 35%),
+    radial-gradient(ellipse at 26% 47%,color-mix(in srgb,var(--cosmic-nebula-teal) 12%,transparent) 0 4%,transparent 28%),
+    linear-gradient(76deg,transparent 34%,rgba(33,109,118,.05) 41%,rgba(177,191,235,.13) 49%,rgba(138,63,120,.1) 56%,transparent 66%);
+  animation:
+    room-cosmic-landing-nebula 30s linear infinite alternate,
+    room-cosmic-nebula-breathe 8s ease-in-out infinite alternate;
+}
+:root[data-theme="cosmic"] body.landing-page::after {
+  animation-direction:alternate-reverse,alternate;
+  animation-duration:78s,8s;
+}
+:root[data-theme="cosmic"] body.plan-page {
+  background:
+    radial-gradient(ellipse at 76% -8%,color-mix(in srgb,var(--cosmic-nebula-blue) 23%,transparent),transparent 39%),
+    radial-gradient(ellipse at 3% 43%,color-mix(in srgb,var(--cosmic-nebula-teal) 16%,transparent),transparent 34%),
+    radial-gradient(ellipse at 92% 72%,color-mix(in srgb,var(--cosmic-nebula-rose) 15%,transparent),transparent 34%),
+    linear-gradient(165deg,#010207 0%,#030510 46%,#010207 100%);
+  background-repeat:no-repeat;
+  animation:room-cosmic-nebula-orbits 34s ease-in-out infinite alternate;
+}
+:root[data-theme="cosmic"] body.plan-page::before {
+  animation:
+    room-cosmic-plan-nebula 36s linear infinite alternate,
+    room-cosmic-nebula-breathe 10s ease-in-out infinite alternate;
+}
+:root[data-theme="cosmic"] body.plan-page::after {
+  animation-duration:86s,7s;
+}
+@keyframes room-cosmic-landing-nebula {
+  from { transform:translate3d(-4%,3%,0) rotate(9deg) scale(1.04); }
+  to { transform:translate3d(5%,-3%,0) rotate(18deg) scale(1.12); }
+}
+@keyframes room-cosmic-plan-nebula {
+  from { transform:translate3d(-4%,-2%,0) rotate(-20deg) scale(1.04); }
+  to { transform:translate3d(5%,3%,0) rotate(-12deg) scale(1.12); }
+}
+:root[data-theme="cosmic"] .app-header {
+  border-color:rgba(157,177,232,.13);
+  background:rgba(3,5,12,.82);
+  box-shadow:0 18px 54px -36px rgba(0,0,0,.96);
+  backdrop-filter:blur(18px);
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap,
+:root[data-theme="cosmic"] .plan-page #pageTitleCard {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap {
+  padding:clamp(24px,4vw,48px) 0 clamp(18px,3vw,36px);
+  background:none;
+}
+:root[data-theme="cosmic"] .plan-page #pageTitleCard {
+  padding:18px 20px;
+  border:1px solid rgba(151,183,255,.22);
+  border-radius:16px;
+  background:
+    radial-gradient(ellipse at 84% 18%,color-mix(in srgb,var(--cosmic-nebula-blue) 30%,transparent),transparent 38%),
+    radial-gradient(ellipse at 12% 92%,color-mix(in srgb,var(--cosmic-nebula-teal) 24%,transparent),transparent 42%),
+    radial-gradient(ellipse at 62% 112%,color-mix(in srgb,var(--cosmic-nebula-rose) 15%,transparent),transparent 38%),
+    linear-gradient(145deg,#0a1022 0%,#050711 62%,#020309 100%);
+  box-shadow:inset 0 1px 0 rgba(205,216,255,.07),0 40px 90px -52px rgba(57,75,154,.66);
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap::before,
+:root[data-theme="cosmic"] .plan-page #pageTitleCard::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:clamp(16px,12%,44px);
+  right:clamp(18px,6vw,78px);
+  width:clamp(160px,24vw,310px);
+  height:120px;
+  opacity:.56;
+  background:center/contain no-repeat;
+  filter:drop-shadow(0 0 7px rgba(151,183,255,.34));
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cg fill='none' stroke='%2397b7ff' stroke-opacity='.34' stroke-width='1'%3E%3Cpath d='M20 88 62 35 126 54 176 18 226 63 282 39'/%3E%3Cpath d='M126 54 151 103' stroke-opacity='.18'/%3E%3C/g%3E%3Cg fill='%23eef2ff'%3E%3Ccircle cx='20' cy='88' r='1.7'/%3E%3Ccircle cx='62' cy='35' r='2.4' fill='%23d9b876'/%3E%3Ccircle cx='126' cy='54' r='2.8' fill='%2397b7ff'/%3E%3Ccircle cx='176' cy='18' r='1.7'/%3E%3Ccircle cx='226' cy='63' r='2.2'/%3E%3Ccircle cx='282' cy='39' r='1.5'/%3E%3Ccircle cx='151' cy='103' r='1.2' fill='%2397b7ff'/%3E%3C/g%3E%3C/svg%3E");
+  transform:rotate(4deg);
+}
+:root[data-theme="cosmic"] .plan-page #pageTitleCard::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Cg fill='none' stroke='%2397b7ff' stroke-opacity='.34' stroke-width='1'%3E%3Cpath d='M30 58 103 19 174 48 244 22 274 83 174 48 139 105 103 19'/%3E%3C/g%3E%3Cg fill='%23eef2ff'%3E%3Ccircle cx='30' cy='58' r='1.6'/%3E%3Ccircle cx='103' cy='19' r='2.5' fill='%23d9b876'/%3E%3Ccircle cx='174' cy='48' r='3' fill='%2397b7ff'/%3E%3Ccircle cx='244' cy='22' r='1.7'/%3E%3Ccircle cx='274' cy='83' r='2'/%3E%3Ccircle cx='139' cy='105' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
+  transform:rotate(-5deg);
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap::after,
+:root[data-theme="cosmic"] .plan-page #pageTitleCard::after {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  background:
+    linear-gradient(112deg,transparent 0 52%,rgba(151,183,255,.045) 52.3% 52.7%,transparent 53%),
+    radial-gradient(circle at 76% 31%,rgba(238,242,255,.74) 0 1.5px,transparent 2.4px),
+    radial-gradient(circle at 89% 63%,rgba(151,183,255,.68) 0 1px,transparent 2px);
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap h1,
+:root[data-theme="cosmic"] .plan-page #pageTitleCard h1 {
+  position:relative;
+  max-width:13ch;
+  font-family:var(--font-display);
+  font-size:clamp(3rem,5.8vw,5.7rem);
+  font-weight:600;
+  line-height:.92;
+  letter-spacing:-.05em;
+  text-wrap:balance;
+  text-shadow:0 10px 42px rgba(85,106,187,.24);
+}
+:root[data-theme="cosmic"] .landing-page .hero-wrap .sub,
+:root[data-theme="cosmic"] .plan-page #pageTitleCard .sub {
+  max-width:62ch;
+  color:var(--text-secondary);
+  letter-spacing:.018em;
+}
+:root[data-theme="cosmic"] .card,
+:root[data-theme="cosmic"] .room,
+:root[data-theme="cosmic"] .tablebox,
+:root[data-theme="cosmic"] .con-card,
+:root[data-theme="cosmic"] .next-con-card,
+:root[data-theme="cosmic"] .public-toolbar {
+  border-color:rgba(157,177,232,.15);
+  background:linear-gradient(145deg,rgba(13,17,32,.94),rgba(5,7,15,.97));
+  box-shadow:var(--shadow-card);
+  backdrop-filter:blur(9px);
+}
+:root[data-theme="cosmic"] .card,
+:root[data-theme="cosmic"] .room,
+:root[data-theme="cosmic"] .next-con-card,
+:root[data-theme="cosmic"] .con-directory,
+:root[data-theme="cosmic"] .public-toolbar,
+:root[data-theme="cosmic"] .grid-view,
+:root[data-theme="cosmic"] dialog {
+  border-radius:16px;
+}
+:root[data-theme="cosmic"] .grid-cell,
+:root[data-theme="cosmic"] .grid-chip,
+:root[data-theme="cosmic"] .chip,
+:root[data-theme="cosmic"] .tablebox {
+  border-radius:10px;
+}
+:root[data-theme="cosmic"] .plan-page .grid-cell .grid-chip,
+:root[data-theme="cosmic"] .plan-page .grid-cell .chip,
+:root[data-theme="cosmic"] .plan-page #viewContent .room-public-chip,
+:root[data-theme="cosmic"] .plan-page #viewContent .tablebox {
+  border-radius:10px;
+}
+:root[data-theme="cosmic"] .landing-page .next-con-card {
+  border-color:rgba(151,183,255,.25);
+  background:
+    radial-gradient(ellipse at 88% 14%,color-mix(in srgb,var(--cosmic-nebula-blue) 28%,transparent),transparent 36%),
+    radial-gradient(ellipse at 8% 100%,color-mix(in srgb,var(--cosmic-nebula-teal) 21%,transparent),transparent 40%),
+    radial-gradient(ellipse at 58% 118%,color-mix(in srgb,var(--cosmic-nebula-rose) 13%,transparent),transparent 36%),
+    linear-gradient(145deg,rgba(13,20,42,.97),rgba(3,5,12,.99));
+}
+:root[data-theme="cosmic"] .landing-page .con-directory,
+:root[data-theme="cosmic"] .plan-page .public-toolbar {
+  border-color:rgba(151,183,255,.2);
+  background:
+    radial-gradient(ellipse at 100% 0,rgba(119,105,201,.1),transparent 40%),
+    rgba(3,5,12,.84);
+}
+:root[data-theme="cosmic"] .landing-page .con-card:nth-child(3n+1),
+:root[data-theme="cosmic"] .room:nth-child(3n+1) {
+  background:linear-gradient(155deg,rgba(20,28,55,.94),rgba(4,6,13,.98) 72%);
+}
+:root[data-theme="cosmic"] .landing-page .con-card:nth-child(3n+2),
+:root[data-theme="cosmic"] .room:nth-child(3n+2) {
+  background:
+    radial-gradient(circle at 88% 12%,rgba(217,184,118,.1),transparent 31%),
+    linear-gradient(155deg,rgba(12,14,25,.96),rgba(4,5,12,.98));
+}
+:root[data-theme="cosmic"] .landing-page .con-card:nth-child(3n),
+:root[data-theme="cosmic"] .room:nth-child(3n) {
+  background:linear-gradient(145deg,rgba(8,27,34,.86),rgba(4,6,13,.98) 72%);
+}
+:root[data-theme="cosmic"] .room-head h3,
+:root[data-theme="cosmic"] .next-con-card .t,
+:root[data-theme="cosmic"] .con-card .t {
+  font-family:var(--font-display);
+  font-weight:600;
+}
+:root[data-theme="cosmic"] .grid-cell {
+  border:1px solid rgba(157,177,232,.1);
+  background:
+    radial-gradient(ellipse at 50% 0,rgba(119,105,201,.07),transparent 55%),
+    rgba(2,4,10,.78);
+  box-shadow:inset 0 1px 0 rgba(205,216,255,.035);
+}
+:root[data-theme="cosmic"] .grid-chip,
+:root[data-theme="cosmic"] .chip {
+  border-color:color-mix(in srgb,var(--chip-accent,var(--room-accent,var(--cosmic-blue))) 52%,rgba(157,177,232,.18));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--chip-accent,var(--room-accent,var(--cosmic-blue))) 10%,#080b16),#04060d 72%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 12px 26px -22px var(--chip-accent,var(--room-accent,var(--cosmic-blue)));
+}
+:root[data-theme="cosmic"] .room:nth-child(3n+2) .tablebox {
+  background:linear-gradient(145deg,rgba(18,15,30,.9),rgba(3,5,12,.96));
+}
+:root[data-theme="cosmic"] .room:nth-child(3n) .tablebox {
+  background:linear-gradient(145deg,rgba(7,22,28,.84),rgba(3,5,12,.96));
+}
+:root[data-theme="cosmic"] input,
+:root[data-theme="cosmic"] textarea,
+:root[data-theme="cosmic"] select,
+:root[data-theme="cosmic"] button,
+:root[data-theme="cosmic"] a.btn {
+  border-color:rgba(157,177,232,.2);
+}
+:root[data-theme="cosmic"] .toolbar-label,
+:root[data-theme="cosmic"] .next-con-card .eyebrow {
+  color:var(--cosmic-blue);
+  letter-spacing:.12em;
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  :root[data-theme="cosmic"] .card,
+  :root[data-theme="cosmic"] .room,
+  :root[data-theme="cosmic"] .grid-chip,
+  :root[data-theme="cosmic"] .chip,
+  :root[data-theme="cosmic"] .con-card,
+  :root[data-theme="cosmic"] .next-con-card {
+    transition:
+      transform .32s ease,
+      border-color .4s ease,
+      box-shadow .5s ease-out;
+  }
+  :root[data-theme="cosmic"] .card:hover,
+  :root[data-theme="cosmic"] .room:hover,
+  :root[data-theme="cosmic"] .con-card:hover,
+  :root[data-theme="cosmic"] .next-con-card:hover {
+    transform:translateY(-3px);
+    border-color:rgba(151,183,255,.34);
+    box-shadow:
+      inset 0 0 0 1px rgba(205,216,255,.12),
+      0 0 27px -8px rgba(82,105,189,.4),
+      0 0 44px -20px rgba(138,63,120,.34),
+      0 32px 72px -36px rgba(40,57,124,.6);
+    transition-duration:.18s,.18s,.22s;
+  }
+  :root[data-theme="cosmic"] .grid-chip:hover,
+  :root[data-theme="cosmic"] .chip:not(.dragging):hover {
+    transform:translateY(-2px);
+    border-color:var(--chip-accent,var(--room-accent,var(--cosmic-blue)));
+    box-shadow:
+      inset 0 0 0 1px rgba(205,216,255,.1),
+      0 0 20px -5px var(--chip-accent,var(--room-accent,var(--cosmic-blue)));
+    transition-duration:.16s,.16s,.2s;
+  }
+}
+:root[data-zen][data-theme="cosmic"] body::before,
+:root[data-zen][data-theme="cosmic"] body::after {
+  animation:none !important;
+}
+:root[data-zen][data-theme="cosmic"] .card:hover,
+:root[data-zen][data-theme="cosmic"] .room:hover,
+:root[data-zen][data-theme="cosmic"] .grid-chip:hover,
+:root[data-zen][data-theme="cosmic"] .chip:hover,
+:root[data-zen][data-theme="cosmic"] .con-card:hover,
+:root[data-zen][data-theme="cosmic"] .next-con-card:hover {
+  transform:none !important;
+}
+@media (max-width:720px) {
+  :root[data-theme="cosmic"] .landing-page .hero-wrap,
+  :root[data-theme="cosmic"] .plan-page #pageTitleCard {
+    padding:28px 22px;
+  }
+  :root[data-theme="cosmic"] .landing-page .hero-wrap h1,
+  :root[data-theme="cosmic"] .plan-page #pageTitleCard h1 {
+    max-width:11ch;
+    font-size:clamp(2.8rem,14vw,4.7rem);
+  }
+  :root[data-theme="cosmic"] .landing-page .hero-wrap::before,
+  :root[data-theme="cosmic"] .plan-page #pageTitleCard::before {
+    top:18px;
+    right:12px;
+    width:140px;
+    opacity:.3;
+  }
+}
+@media print {
+  :root[data-theme="cosmic"] body::before,
+  :root[data-theme="cosmic"] body::after {
+    display:none !important;
+  }
+}

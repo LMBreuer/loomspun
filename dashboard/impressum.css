@@ -1,0 +1,73 @@
+/* Übernimmt das gespeicherte Dashboard-Theme ohne eigenen Umschalter. */
+  :root[data-theme="terminal"] body {
+    background-image: repeating-linear-gradient(180deg,
+      rgba(80,255,140,0.035) 0px, rgba(80,255,140,0.035) 1px, transparent 1px, transparent 3px);
+  }
+  :root[data-theme="cyberpunk"] h1 { text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent); }
+  :root[data-theme="ukiyo"] body {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--page) 95%, transparent), color-mix(in srgb, var(--page) 95%, transparent)),
+      var(--ukiyo-bg, none);
+    background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+  }
+  :root[data-theme="vienna"] body {
+    background-color:var(--page);
+    background-image:
+      radial-gradient(circle at 42px 42px,transparent 0 31px,rgba(176,138,53,.075) 31.5px 32.5px,transparent 33px),
+      radial-gradient(circle at 0 0,rgba(36,84,67,.045) 0 2px,transparent 2.5px),
+      linear-gradient(115deg,rgba(255,250,240,.78),rgba(240,234,220,.9));
+    background-size:84px 84px,42px 42px,auto;
+  }
+  :root[data-theme="vienna"] h1 {
+    font-weight:400;
+    font-size:clamp(3rem,12vw,5rem);
+    line-height:1;
+    letter-spacing:.085em;
+    text-transform:uppercase;
+    -webkit-text-stroke:.018em currentColor;
+  }
+  :root[data-theme="vienna"] .card {
+    border:1px solid var(--vienna-gold);
+    border-radius:34px 34px 5px 5px;
+    box-shadow:inset 0 0 0 4px var(--surface-1),inset 0 0 0 5px rgba(169,120,23,.48),0 14px 38px rgba(50,43,29,.11);
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); color: var(--text-primary); font-family: var(--font-body); line-height: 1.5; padding: var(--sp-6) var(--sp-4); }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 { font-family: var(--font-display); }
+  a { color: var(--accent); }
+  .card {
+    background: var(--surface-1); border: var(--border-w) solid var(--border); border-radius: var(--r-lg);
+    padding: var(--sp-5) var(--sp-6); margin-top: var(--sp-5); box-shadow: var(--shadow-card);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card { transition: transform .16s ease, box-shadow .16s ease; animation: rp-fadein .28s ease-out both; }
+    .card:hover { transform: translateY(-2px); }
+  }
+  :root[data-zen][data-theme="vienna"] .card:hover { transform:none; }
+  @keyframes rp-fadein { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  .hint { font-size: var(--fs-xs); color: var(--text-muted); margin-top: var(--sp-5); }
+
+  :root[data-theme="cosmic"] body {
+    background:
+      radial-gradient(ellipse at 78% -8%,rgba(87,104,187,.2),transparent 38%),
+      radial-gradient(ellipse at 5% 62%,rgba(24,83,106,.14),transparent 36%),
+      radial-gradient(circle,rgba(240,242,255,.6) 0 .8px,transparent 1.2px) 21px 9px/173px 181px,
+      linear-gradient(165deg,#010207 0%,#030510 46%,#010207 100%);
+    background-attachment:fixed;
+  }
+  :root[data-theme="cosmic"] h1 {
+    font-size:clamp(3rem,11vw,5.4rem);
+    font-weight:500;
+    line-height:.86;
+    letter-spacing:-.03em;
+  }
+  :root[data-theme="cosmic"] .card {
+    border-color:rgba(157,177,232,.18);
+    background:
+      radial-gradient(ellipse at 100% 0,rgba(119,105,201,.14),transparent 42%),
+      linear-gradient(145deg,rgba(13,17,32,.96),rgba(5,7,15,.98));
+    backdrop-filter:blur(9px);
+  }

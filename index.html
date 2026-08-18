@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg?v=20260728-4" type="image/svg+xml">
+<title>Loomspun · Where stories gather</title>
+<script src="theme-bootstrap.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme-effects.css?v=20260729-14">
+<link rel="stylesheet" href="app.css?v=20260818-1">
+</head>
+<body class="landing-page">
+<a class="skip-link" href="#main" data-i18n="skipToContent">Zum Inhalt springen</a>
+<div class="wrap">
+  <header class="app-header" aria-label="Kopfzeile" data-i18n-aria-label="headerLabel">
+    <div class="header-inner">
+      <span class="brand"><span class="brand-eyebrow" aria-hidden="true">&gt; </span>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></span>
+      <nav class="page-tabs slot-tabs" id="pageTabs" role="group" aria-label="Seite wählen" data-i18n-aria-label="pageNavigation"></nav>
+      <div class="header-right">
+        <div id="contrastAidSwitch" class="contrast-aid-slot" hidden></div>
+        <div class="controls-group">
+          <div id="langSwitch"></div>
+          <div class="controls-divider"></div>
+          <div id="themeSwitch"></div>
+        </div>
+        <button id="authBtn" type="button">Login / Registrieren</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero-wrap">
+      <div class="eyebrow">Where stories gather.</div>
+      <h1 data-i18n="heroTitle">Wer spielt wann wo?</h1>
+      <p class="sub" data-i18n="heroSub">Raum- und Tischplan für Cons — live synchronisiert mit Playabl. Sieh, wo noch
+      Platz ist, oder öffne den vollen Plan.</p>
+    </div>
+    <div id="inviteBanner" hidden></div>
+    <p id="status" data-i18n="loadingCons">Lade Cons …</p>
+    <div id="nextConCard"></div>
+
+    <section class="card con-directory">
+      <div class="con-directory-head">
+        <div>
+          <h2 data-i18n="conDirectoryTitle">Veranstaltungen</h2>
+          <p class="hint" id="conDirectoryHint" data-i18n="conDirectoryPublicHint">Öffentliche Veranstaltungen aus verbundenen Quellen.</p>
+        </div>
+        <div class="cons-toolbar">
+          <div class="slot-tabs con-time-tabs" role="group" aria-label="Zeitraum filtern" data-i18n-aria-label="conTimeFilter">
+            <button type="button" data-con-time="upcoming" aria-pressed="true" data-i18n="conUpcoming">Bevorstehend</button>
+            <button type="button" data-con-time="past" aria-pressed="false" data-i18n="conPast">Vergangen</button>
+          </div>
+          <button id="openConFilters" class="con-filter-trigger" type="button" aria-haspopup="dialog"><span data-i18n="conFilters">Filter</span> <span id="activeConFilterCount" hidden></span></button>
+          <input type="search" id="conSearch" placeholder="Con, Community oder Event-ID suchen …" aria-label="Con, Community oder Event-ID suchen" data-i18n-placeholder="conSearchPlaceholder" data-i18n-aria-label="conSearchPlaceholder">
+        </div>
+      </div>
+      <div class="con-list" id="conList"></div>
+    </section>
+
+    <button type="button" id="openCreateConBtn" hidden style="display:block;margin:var(--sp-4) auto 0" data-i18n="createConTriggerBtn">+ Neue Con anlegen</button>
+    <div class="landing-foot">
+      <div data-i18n="footPlayabl">Spiele werden bei jedem Öffnen live von der Playabl-API geladen; Plätze = Spielplätze + 1 anbietende Person.</div>
+      <div data-i18n="footRequest">Über „Änderung vorschlagen“ am Spiel kann jede*r der Crew einen Wunsch schicken.</div>
+    </div>
+  </main>
+  <footer class="credits" id="credits"></footer>
+</div>
+
+<dialog id="createConDlg" aria-labelledby="createConDlgH">
+  <h2 id="createConDlgH" data-i18n="createConTitle">Neue Con für die Raumplanung anlegen</h2>
+  <p class="hint" data-i18n="createConHint">Du wirst automatisch erstes Crew-Mitglied dieser Con.</p>
+  <div class="slot-tabs" role="group" aria-label="Con-Typ wählen" id="conTypeTabs" style="margin-bottom:var(--sp-3)">
+    <button type="button" data-contype="playabl" aria-pressed="true" data-i18n="conTypePlayabl">Mit Playabl-Event</button>
+    <button type="button" data-contype="manual" aria-pressed="false" data-i18n="conTypeManual">Rein manuell (kein Playabl)</button>
+  </div>
+  <div class="controls" style="margin:0 0 var(--sp-3)" id="playablFields">
+    <div class="field">
+      <label for="communitySelect" data-i18n="community">Community</label>
+      <select id="communitySelect"><option value="">– lädt –</option></select>
+    </div>
+    <div class="field">
+      <label for="eventSelect" data-i18n="event">Event</label>
+      <select id="eventSelect"><option value="">– Community wählen –</option></select>
+    </div>
+    <div class="field">
+      <label for="eventIdInput" data-i18n="eventIdDirect">… oder Event-ID direkt</label>
+      <input type="text" id="eventIdInput" inputmode="numeric" placeholder="z.B. 104" size="10">
+    </div>
+  </div>
+  <p class="hint" id="manualHint" hidden data-i18n="manualHint">Ohne Playabl-Event gibt es keine automatisch geladenen Spiele — Spiele/Programmpunkte werden im Raumplan manuell angelegt.</p>
+  <div class="field" style="margin-bottom:var(--sp-3);max-width:400px">
+    <label for="conName" data-i18n="conNameLabel">Name der Con</label>
+    <input type="text" id="conName" placeholder="z.B. 3W6 Con 2026" maxlength="80">
+  </div>
+  <label style="display:flex;gap:8px;align-items:center;font-size:var(--fs-sm);margin-bottom:var(--sp-3);cursor:pointer">
+    <input type="checkbox" id="conListed" checked> <span data-i18n="conListedLabel">In „Bestehende Cons" öffentlich auflisten</span>
+  </label>
+  <p class="msg" id="createMsg" role="status"></p>
+  <div class="dactions">
+    <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+    <button id="createConBtn" type="button" class="primary" data-i18n="createConBtn">Con anlegen</button>
+  </div>
+</dialog>
+
+<dialog id="conFilterDlg" aria-labelledby="conFilterTitle">
+  <h2 id="conFilterTitle" data-i18n="conFilterTitle">Veranstaltungen filtern</h2>
+  <div class="frow">
+    <label for="conScopeFilter" data-i18n="conScopeLabel">Anzeigen</label>
+    <select id="conScopeFilter">
+      <option value="public" data-i18n="conScopePublic">Öffentlich</option>
+      <option value="mine" data-i18n="conScopeMine">Meine</option>
+    </select>
+  </div>
+  <div class="frow">
+    <label for="conCommunityFilter">Community</label>
+    <input type="search" id="conCommunityFilter" list="conCommunityOptions" placeholder="Alle Communities" data-i18n-placeholder="conAllCommunities">
+    <datalist id="conCommunityOptions"></datalist>
+  </div>
+  <div class="frow">
+    <label for="conSourceFilter" data-i18n="conDataSource">Datenquelle</label>
+    <select id="conSourceFilter">
+      <option value="all" data-i18n="conAllSources">Alle Quellen</option>
+      <option value="playabl">Playabl</option>
+      <option value="loomspun">Loomspun</option>
+      <option value="both" data-i18n="conBothSources">Playabl + Loomspun</option>
+    </select>
+  </div>
+  <details class="direct-open-details">
+    <summary data-i18n="conDirectOpen">Link oder Con-ID direkt öffnen</summary>
+    <div class="direct-open-row">
+      <input type="text" id="directInput" placeholder="Link, Slug oder ID" aria-label="Con direkt öffnen" data-i18n-placeholder="conDirectPlaceholder" data-i18n-aria-label="openConDirectly">
+      <button id="directGo" type="button" data-i18n="open">Öffnen</button>
+    </div>
+  </details>
+  <div class="dactions">
+    <button type="button" id="resetConFilters" data-i18n="conResetFilters">Zurücksetzen</button>
+    <button type="button" onclick="this.closest('dialog').close()" data-i18n="cancel">Abbrechen</button>
+    <button type="button" class="primary" id="applyConFilters" data-i18n="apply">Anwenden</button>
+  </div>
+</dialog>
+
+<script src="punk-zine-quotes.js"></script>
+<script src="app-config.js"></script>
+<script src="utils.js"></script>
+<script src="themes.js?v=20260728-2"></script>
+<script src="i18n.js?v=20260818-3"></script>
+<script src="supabase-api.js"></script>
+<script src="auth.js"></script>
+<script src="playabl-api.js"></script>
+<script src="guided-tour.js?v=20260810-4"></script>
+<script src="con-model.js?v=20260818-1"></script>
+<script src="landing.js?v=20260818-4"></script>
+</body>
+</html>
