@@ -342,7 +342,7 @@ function renderCrewConSwitch() {
 }
 
 /* ---------------- Render-Dispatcher ---------------- */
-function renderActive({ animate = true } = {}) {
+function renderActive({ animate = true, persist = true } = {}) {
   document.body.classList.add("is-ready");
   document.body.classList.toggle("print-mode", S.mode === "print");
   renderCrewConSwitch();
@@ -387,7 +387,7 @@ function renderActive({ animate = true } = {}) {
     else viewC.innerHTML = raeumeReadHtml();
     if (S.view === "lageplan") mountFloorPlanViewer();
   }
-  persistNavigationState();
+  if (persist) persistNavigationState();
 }
 window.addEventListener("raumplan-theme-change", () => {
   if (S.con) renderActive({ animate: false });

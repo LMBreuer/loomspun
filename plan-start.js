@@ -393,8 +393,60 @@ function configurePlanTours() {
   });
 }
 
+function planSnapshotDataFromState() {
+  return {
+    rooms: S.rooms,
+    tables: S.tables,
+    assignments: S.assignments,
+    slotBuckets: S.slotBuckets,
+    slots: S.slots,
+    featureTags: S.featureTags,
+    roomFeatureTags: S.roomFeatureTags,
+    dbGames: S.dbGames,
+    gameRequiredTags: S.gameRequiredTags,
+    publicFloorPlan: S.floorPlanPublic,
+  };
+}
+
+function applyPlanSnapshot(snapshot, { cached = false } = {}) {
+  const con = snapshot.con;
+  const data = snapshot.data || {};
+  S.con = con;
+  S.store = makeStore(con.id);
+  S.rooms = data.rooms || [];
+  S.tables = data.tables || [];
+  S.assignments = data.assignments || [];
+  S.slotBuckets = data.slotBuckets || [];
+  S.slots = data.slots || [];
+  S.featureTags = data.featureTags || [];
+  S.roomFeatureTags = data.roomFeatureTags || [];
+  S.gameRequiredTags = data.gameRequiredTags || [];
+  S.floorPlanPublic = data.publicFloorPlan || null;
+  S.dbGames = data.dbGames || [];
+  S.games = snapshot.games || [];
+  gamesFromDb();
+  sortSlots();
+  if (!S.slots.some(slot => slot.key === S.activeSlot)) S.activeSlot = S.slots[0]?.key || null;
+  document.getElementById("pageTitle").textContent = con.name;
+  document.getElementById("pageSub").textContent = con.playabl_event_id
+    ? tr("pageSubPlayabl", { id: con.playabl_event_id }) : tr("pageSubManual");
+  document.title = con.name + " – Loomspun Raumplan";
+  restoreNavigationState();
+  renderActive({ animate: !cached, persist: !cached });
+  updateViewBanner();
+}
+
 (async () => {
+  let cachedRecord = null;
   try {
+    cachedRecord = await PlanCache.get(CON_PARAM);
+    if (cachedRecord?.snapshot?.con) {
+      applyPlanSnapshot(cachedRecord.snapshot, { cached: true });
+      document.getElementById("status").textContent = tr("cachedRefreshing", {
+        date: new Intl.DateTimeFormat(LANG === "en" ? "en-GB" : "de-AT", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" }).format(new Date(cachedRecord.savedAt)),
+      });
+    }
+
     const con = await loadCon(CON_PARAM);
     if (!con) {
       document.getElementById("pageSub").textContent = "";
@@ -409,23 +461,34 @@ function configurePlanTours() {
       ? tr("pageSubPlayabl", { id: con.playabl_event_id }) : tr("pageSubManual");
     document.title = con.name + " – Loomspun Raumplan";
 
-    // store.init() zuerst (nicht parallel zu loadPlayabl): die Slot-Buckets
-    // daraus werden gebraucht, um Playabl-Sessions in Tages-Slots einzusortieren.
+    // Die Slot-Buckets aus store.init() werden für die Einordnung der
+    // Playabl-Sessions benötigt. Danach laufen unabhängige Abfragen parallel.
     const data = await S.store.init();
     S.rooms = data.rooms || []; S.tables = data.tables || []; S.assignments = data.assignments || [];
     S.slotBuckets = data.slotBuckets || []; S.slots = data.slots || [];
     S.featureTags = data.featureTags || []; S.roomFeatureTags = data.roomFeatureTags || [];
     S.gameRequiredTags = data.gameRequiredTags || [];
     S.floorPlanPublic = data.publicFloorPlan || null;
-    S.games = await loadPlayabl(con.playabl_event_id, S.slotBuckets);
-    await refreshRole();
-    await refreshCrewCons();
-    await loadConSwitchList();
-    if (S.role) S.floorPlanDraft = await S.store.loadFloorPlanDraft().catch(() => null);
+    const [playablGames] = await Promise.all([
+      loadPlayabl(con.playabl_event_id, S.slotBuckets),
+      refreshRole(),
+      loadConSwitchList(),
+    ]);
+    S.games = playablGames;
+    await Promise.all([
+      refreshCrewCons(),
+      S.role ? S.store.loadFloorPlanDraft().then(value => { S.floorPlanDraft = value; }).catch(() => { S.floorPlanDraft = null; }) : Promise.resolve(),
+      S.role ? S.store.listRequests().then(value => { S.requests = value; }).catch(() => { S.requests = []; }) : Promise.resolve(),
+    ]);
     if (S.games.length) {
       const days = [...new Set(S.games.map(g => g.slotKey.split("|")[0]))].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d));
-      await S.store.ensureSlotsForDays(days);
-      S.slots = await supaFetch(`slots?select=*&con_id=eq.${con.id}&order=day.asc.nullslast,sort.asc`);
+      // Nur Crew kann Slots materialisieren. Für die öffentliche Ansicht sind
+      // die bereits in init() geladenen Slots aktuell und werden nicht doppelt
+      // abgefragt.
+      if (S.role) {
+        await S.store.ensureSlotsForDays(days);
+        S.slots = await supaFetch(`slots?select=*&con_id=eq.${con.id}&order=day.asc.nullslast,sort.asc`);
+      }
       // Rand-Fall (siehe loadPlayabl): Sessions außerhalb aller Buckets
       // ("Unsortiert", bei einer neuen Con ohne Vorlagen zunächst "Tag")
       // materialisieren sich nicht über ensure_slots_for_days (das kennt nur Buckets)
@@ -446,18 +509,30 @@ function configurePlanTours() {
     }
     S.dbGames = data.dbGames || [];
     gamesFromDb();
-    S.activeSlot = S.slots[0]?.key || null;
-    if (S.role) S.requests = await S.store.listRequests().catch(() => []);
+    if (!S.slots.some(slot => slot.key === S.activeSlot)) S.activeSlot = S.slots[0]?.key || null;
     restoreNavigationState();
     if (FORCE_CREW_ENTRY && S.role) S.mode = "crew";
+    const freshSnapshot = PlanCache.createSnapshot(con, planSnapshotDataFromState(), S.games);
+    const publicDataChanged = !cachedRecord || PlanCache.signature(cachedRecord.snapshot) !== PlanCache.signature(freshSnapshot);
+    await PlanCache.put([CON_PARAM, con.id, con.slug], freshSnapshot);
     document.getElementById("status").textContent =
       tr("asOf", { date: new Intl.DateTimeFormat(LANG === "en" ? "en-GB" : "de-AT", { timeZone: TZ, dateStyle: "full", timeStyle: "short" }).format(new Date()) });
-    renderActive();
+    // Bei identischem öffentlichen Stand bleibt das bereits gerenderte DOM
+    // unangetastet. Rollen oder persönliche Filter benötigen trotzdem die
+    // frisch geladenen, nicht persistierten Zusatzdaten.
+    if (!cachedRecord || publicDataChanged || S.role || S.personalFilterActive) renderActive({ animate: !cachedRecord });
     highlightRequestedPlanGame();
     updateViewBanner();
     renderPendingInvites(document.getElementById("inviteBanner"), () => window.location.reload());
     configurePlanTours();
   } catch (err) {
-    document.getElementById("status").innerHTML = `<span class="err">${esc(tr("dataLoadFailed", { err: err.message }))}</span>`;
+    if (cachedRecord?.snapshot?.con) {
+      applyPlanSnapshot(cachedRecord.snapshot, { cached: true });
+      document.getElementById("status").textContent = tr("cachedOffline", {
+        date: new Intl.DateTimeFormat(LANG === "en" ? "en-GB" : "de-AT", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" }).format(new Date(cachedRecord.savedAt)),
+      });
+    } else {
+      document.getElementById("status").innerHTML = `<span class="err">${esc(tr("dataLoadFailed", { err: err.message }))}</span>`;
+    }
   }
 })();

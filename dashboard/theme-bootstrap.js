@@ -1,4 +1,4 @@
-const THEMES_VERSION = "20260728-6";
+const THEMES_VERSION = "20260818-1";
 const themes = document.createElement("link");
 themes.rel = "stylesheet";
 themes.href = `../themes.css?v=${THEMES_VERSION}`;

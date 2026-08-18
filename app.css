@@ -116,7 +116,9 @@ button.danger { color: var(--warn); border-color: var(--warn); background: trans
   margin: calc(var(--sp-6) * -1) calc(var(--sp-4) * -1) var(--sp-5); padding: var(--sp-3) var(--sp-4);
 }
 .header-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; gap: var(--sp-4); }
-.brand { display: inline-flex; font-family: var(--font-display); font-weight: 800; font-size: var(--fs-md); letter-spacing: .01em; color: var(--text-primary); text-decoration: none; white-space: nowrap; justify-self: start; }
+.brand { display: inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight: 800; font-size: var(--fs-md); letter-spacing: .01em; color: var(--text-primary); text-decoration: none; white-space: nowrap; justify-self: start; }
+.brand-mark { width:24px; height:24px; flex:0 0 auto; }
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .brand { font-weight:600; letter-spacing:-.04em; }
 .page-tabs { justify-self: center; }
 .header-right { display: flex; gap: var(--sp-3); align-items: center; flex-shrink: 0; justify-self: end; }
 .nav-groups { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; margin: var(--sp-3) 0; }

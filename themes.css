@@ -121,6 +121,15 @@
   --room-a: #0000cc; --room-b: #7a3d00; --room-c: #005a4d; --room-d: #6a006a; --room-e: #b30000;
 }
 
+/* Loomspun-Standardschrift aus dem Brand-Paket. Die eigenständige
+   Typografie der Spezial-Themes bleibt bewusst unverändert. */
+:root[data-theme="dark"],
+:root[data-theme="light"],
+:root[data-theme="contrast"] {
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "Familjen Grotesk", Helvetica, sans-serif;
+}
+
 :root[data-theme="colorful"] {
   color-scheme: light;
   --page:      #f4f2fb;
