@@ -9,14 +9,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="theme-effects.css?v=20260729-14">
-<link rel="stylesheet" href="app.css?v=20260818-1">
+<link rel="stylesheet" href="app.css?v=20260818-2">
 </head>
 <body class="landing-page">
 <a class="skip-link" href="#main" data-i18n="skipToContent">Zum Inhalt springen</a>
 <div class="wrap">
   <header class="app-header" aria-label="Kopfzeile" data-i18n-aria-label="headerLabel">
     <div class="header-inner">
-      <span class="brand"><span class="brand-eyebrow" aria-hidden="true">&gt; </span>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></span>
+      <span class="brand">Loomspun<span class="brand-cursor" aria-hidden="true">_</span></span>
       <nav class="page-tabs slot-tabs" id="pageTabs" role="group" aria-label="Seite wählen" data-i18n-aria-label="pageNavigation"></nav>
       <div class="header-right">
         <div id="contrastAidSwitch" class="contrast-aid-slot" hidden></div>
@@ -32,10 +32,8 @@
 
   <main id="main">
     <div class="hero-wrap">
-      <div class="eyebrow">Where stories gather.</div>
-      <h1 data-i18n="heroTitle">Wer spielt wann wo?</h1>
-      <p class="sub" data-i18n="heroSub">Raum- und Tischplan für Cons — live synchronisiert mit Playabl. Sieh, wo noch
-      Platz ist, oder öffne den vollen Plan.</p>
+      <h1>Where stories gather.</h1>
+      <p class="sub" data-i18n="heroSub">Loomspun bündelt Dashboard, Kalender, Raum- und Tischplanung sowie Crew-Werkzeuge für Cons und andere slotbasierte Veranstaltungen – mit Playabl als Live-Datenquelle.</p>
     </div>
     <div id="inviteBanner" hidden></div>
     <p id="status" data-i18n="loadingCons">Lade Cons …</p>
@@ -52,7 +50,10 @@
             <button type="button" data-con-time="upcoming" aria-pressed="true" data-i18n="conUpcoming">Bevorstehend</button>
             <button type="button" data-con-time="past" aria-pressed="false" data-i18n="conPast">Vergangen</button>
           </div>
-          <button id="openConFilters" class="con-filter-trigger" type="button" aria-haspopup="dialog"><span data-i18n="conFilters">Filter</span> <span id="activeConFilterCount" hidden></span></button>
+          <button id="openConFilters" class="icon-btn con-filter-trigger" type="button" aria-haspopup="dialog" title="Filter" aria-label="Filter" data-i18n-title="conFilters" data-i18n-aria-label="conFilters">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            <span class="con-filter-count" id="activeConFilterCount" hidden></span>
+          </button>
           <input type="search" id="conSearch" placeholder="Con, Community oder Event-ID suchen …" aria-label="Con, Community oder Event-ID suchen" data-i18n-placeholder="conSearchPlaceholder" data-i18n-aria-label="conSearchPlaceholder">
         </div>
       </div>
@@ -145,12 +146,12 @@
 <script src="app-config.js"></script>
 <script src="utils.js"></script>
 <script src="themes.js?v=20260728-2"></script>
-<script src="i18n.js?v=20260818-3"></script>
+<script src="i18n.js?v=20260818-4"></script>
 <script src="supabase-api.js"></script>
 <script src="auth.js"></script>
 <script src="playabl-api.js"></script>
 <script src="guided-tour.js?v=20260810-4"></script>
 <script src="con-model.js?v=20260818-1"></script>
-<script src="landing.js?v=20260818-4"></script>
+<script src="landing.js?v=20260818-5"></script>
 </body>
 </html>

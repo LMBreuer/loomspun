@@ -40,7 +40,7 @@
 }
 .page-tabs [aria-disabled="true"] { opacity: .42; cursor: default; }
 
-@media (max-width: 1320px) {
+@media (max-width: 1080px) {
   .header-inner { grid-template-columns: 1fr; grid-template-rows: repeat(3, auto); justify-items: start; gap: 10px; }
   .header-inner .brand, .header-inner .page-tabs { justify-self: start; }
   .header-right { width: 100%; justify-self: stretch; justify-content: flex-start; flex-wrap: wrap; }

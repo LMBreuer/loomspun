@@ -82,12 +82,21 @@ async function renderNextConCard() {
     } catch {}
   }
   const meta = `${esc(con.playabl_event_id ? conDisplayDate(con) : tr("createdOn", { date: conDisplayDate(con) }))}${con.playabl_event_id ? ` · ${esc(tr("playablEvent"))}` : ""}`;
-  el.innerHTML = `<a class="next-con-card" href="plan.html?con=${esc(con.slug || con.id)}&entry=plan">
-    <div class="eyebrow">${esc(tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
-    <div class="t">${esc(con.name)}${crewBadge}</div>
-    <div class="m">${meta}</div>
-    <div class="open">${esc(tr("goToOverview"))}</div>
-  </a>`;
+  const conId = encodeURIComponent(con.slug || con.id);
+  const dashboardAction = con.playabl_event_id
+    ? `<a class="btn primary" href="dashboard/?event=${encodeURIComponent(con.playabl_event_id)}">${esc(tr("pageTabDashboard"))}</a>`
+    : "";
+  el.innerHTML = `<article class="next-con-card">
+    <div class="next-con-copy">
+      <div class="eyebrow">${esc(tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
+      <div class="t">${esc(con.name)}${crewBadge}</div>
+      <div class="m">${meta}</div>
+    </div>
+    <div class="next-con-actions" aria-label="${esc(tr("nextConActionsFor", { name: con.name }))}">
+      ${dashboardAction}
+      <a class="btn" href="plan.html?con=${conId}&entry=plan">${esc(tr("pageTabPlan"))}</a>
+    </div>
+  </article>`;
 }
 
 function renderIndexPageTabs() {
