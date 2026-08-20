@@ -46,18 +46,31 @@ async function reloadCons() {
 // nächsten Starts. So verschwindet eine Veranstaltung nicht am ersten Tag.
 function computeNextCons() {
   const now = new Date();
-  const candidates = allCons.map(c => {
-    const ev = c.playabl_event_id ? allEvents.find(e => String(e.id) === String(c.playabl_event_id)) : null;
-    if (!ev?.start_time) return null;
+  const candidates = allEvents.map(ev => {
+    const con = allCons.find(item => String(item.playabl_event_id) === String(ev.id)) || null;
+    if (!ev.start_time) return null;
     const date = new Date(ev.start_time);
     const endDate = new Date(ev.end_time || ev.start_time);
     if (Number.isNaN(date.getTime()) || Number.isNaN(endDate.getTime()) || endDate < now) return null;
-    return { con: c, date, endDate, running:date <= now };
+    // Mehrjährige Sammel-/Recurring-Events sind keine sinnvolle „Läuft bald“-Karte.
+    if (endDate.getTime() - date.getTime() > 31 * 86400000) return null;
+    return {
+      con,
+      eventId:String(ev.id),
+      name:con?.name || ev.title,
+      recordKey:con ? `loomspun:${con.id}` : `playabl:${ev.id}`,
+      date,
+      endDate,
+      running:date <= now,
+    };
   }).filter(Boolean);
-  candidates.sort((a, b) => a.date - b.date);
+  candidates.sort((a, b) => {
+    if (a.running !== b.running) return a.running ? -1 : 1;
+    return a.running ? b.date - a.date : a.date - b.date;
+  });
   if (!candidates.length) return [];
   const firstDate = candidates[0].date.getTime();
-  return candidates.filter(candidate => candidate.date.getTime() - firstDate <= 14 * 86400000).slice(0, 3);
+  return candidates.filter(candidate => Math.abs(candidate.date.getTime() - firstDate) <= 14 * 86400000).slice(0, 3);
 }
 function computeNextCon() { return computeNextCons()[0] || null; }
 function formatCountdown(date) {
@@ -66,41 +79,32 @@ function formatCountdown(date) {
   if (days === 1) return tr("nextConTomorrow");
   return tr("nextConInDays", { n: days });
 }
-function conDisplayDate(con) {
-  const ev = con.playabl_event_id ? allEvents.find(e => String(e.id) === String(con.playabl_event_id)) : null;
-  const date = ev?.start_time ? new Date(ev.start_time) : new Date(con.created_at);
-  return date.toLocaleDateString(LANG === "en" ? "en-GB" : "de-AT", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-  });
-}
 async function renderNextConCard() {
   const el = document.getElementById("nextConCard");
   const nextCons = computeNextCons();
   if (!nextCons.length) { el.innerHTML = ""; return; }
   const token = await Auth.accessToken();
   const memberships = new Set();
-  if (token) await Promise.all(nextCons.map(async ({ con }) => {
+  if (token) await Promise.all(nextCons.filter(({ con }) => con).map(async ({ con }) => {
     try {
       const rows = await supaFetch(`con_members?con_id=eq.${con.id}&select=role`, { headers: supaHeaders(token) });
       if (rows?.length) memberships.add(String(con.id));
     } catch {}
   }));
-  el.innerHTML = `<div class="next-cons-list">${nextCons.map(({ con, date, running }) => {
-    const crewBadge = memberships.has(String(con.id)) ? `<span class="crew-badge"><span class="dot"></span>${esc(tr("nextConCrewBadge"))}</span>` : "";
-    const meta = `${esc(con.playabl_event_id ? conDisplayDate(con) : tr("createdOn", { date: conDisplayDate(con) }))}${con.playabl_event_id ? ` · ${esc(tr("playablEvent"))}` : ""}`;
-    const conId = encodeURIComponent(con.slug || con.id);
-    const dashboardAction = con.playabl_event_id
-      ? `<a class="btn primary" href="dashboard/?event=${encodeURIComponent(con.playabl_event_id)}">${esc(tr("pageTabDashboard"))}</a>`
-      : "";
+  el.innerHTML = `<div class="next-cons-list">${nextCons.map(({ con, eventId, name, date, running }) => {
+    const crewBadge = con && memberships.has(String(con.id)) ? `<span class="crew-badge"><span class="dot"></span>${esc(tr("nextConCrewBadge"))}</span>` : "";
+    const meta = `${esc(date.toLocaleDateString(LANG === "en" ? "en-GB" : "de-AT", { day:"2-digit", month:"2-digit", year:"numeric" }))} · ${esc(tr("playablEvent"))}`;
+    const dashboardAction = `<a class="btn primary" href="dashboard/?event=${encodeURIComponent(eventId)}">${esc(tr("pageTabDashboard"))}</a>`;
+    const roomPlanAction = con ? `<a class="btn" href="plan.html?con=${encodeURIComponent(con.slug || con.id)}&entry=plan">${esc(tr("pageTabPlan"))}</a>` : "";
     return `<article class="next-con-card">
     <div class="next-con-copy">
       <div class="eyebrow">${esc(running ? tr("nextConRunning") : tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
-      <div class="t">${esc(con.name)}${crewBadge}</div>
+      <div class="t">${esc(name)}${crewBadge}</div>
       <div class="m">${meta}</div>
     </div>
-    <div class="next-con-actions" aria-label="${esc(tr("nextConActionsFor", { name: con.name }))}">
+    <div class="next-con-actions" aria-label="${esc(tr("nextConActionsFor", { name }))}">
       ${dashboardAction}
-      <a class="btn" href="plan.html?con=${conId}&entry=plan">${esc(tr("pageTabPlan"))}</a>
+      ${roomPlanAction}
     </div>
   </article>`;
   }).join("")}</div>`;
@@ -108,7 +112,7 @@ async function renderNextConCard() {
 
 function renderIndexPageTabs() {
   const next = computeNextCon();
-  const eventId = next?.con?.playabl_event_id;
+  const eventId = next?.eventId;
   const conId = next?.con?.slug || next?.con?.id;
   const disabled = label => `<span aria-disabled="true">${esc(label)}</span>`;
   document.getElementById("pageTabs").innerHTML = `
@@ -189,7 +193,7 @@ function renderCons() {
   const q = document.getElementById("conSearch").value.trim().toLocaleLowerCase(LANG === "en" ? "en" : "de");
   const community = document.getElementById("conCommunityFilter").value.trim().toLocaleLowerCase(LANG === "en" ? "en" : "de");
   const source = document.getElementById("conSourceFilter").value;
-  const nextKeys = new Set(computeNextCons().map(({ con }) => `loomspun:${con.id}`));
+  const nextKeys = new Set(computeNextCons().map(({ recordKey }) => recordKey));
   const list = normalizedCons().filter(record => {
     const displayCommunity = conCommunityName(record);
     const searchable = `${record.name} ${displayCommunity} ${record.externalIds.playabl || ""} ${record.externalIds.loomspun || ""}`.toLocaleLowerCase(LANG === "en" ? "en" : "de");
