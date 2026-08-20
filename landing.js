@@ -42,14 +42,17 @@ async function reloadCons() {
 }
 
 /* ---------- Hervorgehobene "nächste Con"-Karte ---------- */
-// Für die nächste Con zählt der Start des verknüpften Playabl-Events.
+// Laufende Cons bleiben bis zu ihrer Endzeit sichtbar; danach folgen die
+// nächsten Starts. So verschwindet eine Veranstaltung nicht am ersten Tag.
 function computeNextCons() {
   const now = new Date();
   const candidates = allCons.map(c => {
     const ev = c.playabl_event_id ? allEvents.find(e => String(e.id) === String(c.playabl_event_id)) : null;
     if (!ev?.start_time) return null;
     const date = new Date(ev.start_time);
-    return date >= now ? { con: c, date } : null;
+    const endDate = new Date(ev.end_time || ev.start_time);
+    if (Number.isNaN(date.getTime()) || Number.isNaN(endDate.getTime()) || endDate < now) return null;
+    return { con: c, date, endDate, running:date <= now };
   }).filter(Boolean);
   candidates.sort((a, b) => a.date - b.date);
   if (!candidates.length) return [];
@@ -82,7 +85,7 @@ async function renderNextConCard() {
       if (rows?.length) memberships.add(String(con.id));
     } catch {}
   }));
-  el.innerHTML = `<div class="next-cons-list">${nextCons.map(({ con, date }) => {
+  el.innerHTML = `<div class="next-cons-list">${nextCons.map(({ con, date, running }) => {
     const crewBadge = memberships.has(String(con.id)) ? `<span class="crew-badge"><span class="dot"></span>${esc(tr("nextConCrewBadge"))}</span>` : "";
     const meta = `${esc(con.playabl_event_id ? conDisplayDate(con) : tr("createdOn", { date: conDisplayDate(con) }))}${con.playabl_event_id ? ` · ${esc(tr("playablEvent"))}` : ""}`;
     const conId = encodeURIComponent(con.slug || con.id);
@@ -91,7 +94,7 @@ async function renderNextConCard() {
       : "";
     return `<article class="next-con-card">
     <div class="next-con-copy">
-      <div class="eyebrow">${esc(tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
+      <div class="eyebrow">${esc(running ? tr("nextConRunning") : tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
       <div class="t">${esc(con.name)}${crewBadge}</div>
       <div class="m">${meta}</div>
     </div>
