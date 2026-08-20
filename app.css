@@ -117,7 +117,11 @@ button.danger { color: var(--warn); border-color: var(--warn); background: trans
 }
 .header-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; gap: var(--sp-4); }
 .brand { display: inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight: 800; font-size: var(--fs-md); letter-spacing: .01em; color: var(--text-primary); text-decoration: none; white-space: nowrap; justify-self: start; }
-.brand-mark { width:24px; height:24px; flex:0 0 auto; }
+.brand-mark { width:24px; height:24px; flex:0 0 auto; overflow:visible; }
+.brand-mark path { transition:stroke .22s ease, opacity .22s ease, transform .22s ease; transform-origin:center; }
+.brand:hover .brand-mark path:not(.brand-mark-l), .brand:focus-visible .brand-mark path:not(.brand-mark-l) { opacity:.38; }
+.brand:hover .brand-mark-l, .brand:focus-visible .brand-mark-l { stroke:var(--accent); transform:translateX(.35px); }
+@media (prefers-reduced-motion:reduce) { .brand-mark path { transition:none; } }
 :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .brand { font-weight:600; letter-spacing:-.04em; }
 .page-tabs { justify-self: center; }
 .header-right { display: flex; gap: var(--sp-3); align-items: center; flex-shrink: 0; justify-self: end; }
@@ -818,6 +822,9 @@ dialog .msg.err { color: var(--warn); }
   padding: var(--sp-3) var(--sp-4);
 }
 .con-card .t { font-weight: 700; font-family: var(--font-display); }
+.con-card[data-default-href] { cursor:pointer; }
+.con-card .t a { color:inherit; text-decoration:none; }
+.con-card .t a:hover, .con-card .t a:focus-visible { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
 .con-card .m { font-size: var(--fs-xs); color: var(--text-secondary); }
 
 .cons-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: var(--sp-3); }
@@ -1153,15 +1160,41 @@ dialog {
   font-weight: 700;
   line-height: normal;
 }
-#authBtn:not(.has-avatar) {
-  padding: 9px 14px;
-  border: var(--chrome-border-w) solid var(--border);
-  border-radius: var(--r-md);
+#authBtn {
+  display:inline-grid;
+  place-items:center;
+  flex:0 0 36px;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  padding:0;
+  border:var(--chrome-border-w) solid var(--border);
+  border-radius:50%;
   background: var(--surface-1);
-  font-size: .8rem;
-  font-weight: 700;
-  line-height: normal;
-  white-space: nowrap;
+  color:var(--text-secondary);
+  line-height:1;
+}
+#authBtn:hover, #authBtn:focus-visible { border-color:var(--accent); color:var(--accent); }
+#authBtn.has-avatar { background:transparent; border-color:transparent; }
+.auth-login-icon {
+  width:19px;
+  height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.auth-login-label {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
 }
 .auth-avatar {
   width: 34px;
@@ -1187,6 +1220,7 @@ dialog {
 }
 .landing-page.is-ready #status { display: none; }
 .landing-page #nextConCard { margin-bottom: 24px; }
+.landing-page .next-cons-list { display:grid; gap:12px; }
 .landing-page .next-con-card {
   display: flex;
   align-items: center;
@@ -1349,9 +1383,11 @@ dialog {
 .plan-page #pageTitleCard:hover { transform: none; }
 .plan-page #pageTitleCard h1 { font-size: 2.4rem; line-height: normal; }
 .plan-title-row { display:flex; align-items:center; gap:10px; }
-.con-switch-button { display:grid; place-items:center; width:34px; height:34px; padding:0; border:var(--border-w) solid var(--border); border-radius:var(--r-pill); background:var(--surface-1); color:var(--text-secondary); cursor:pointer; }
+.event-meta-row { display:flex; align-items:center; gap:7px; min-width:0; flex-wrap:wrap; }
+.event-meta-row .sub { min-width:0; }
+.con-switch-button { display:grid; place-items:center; flex:0 0 auto; width:28px; height:28px; padding:0; border:0; border-radius:var(--r-pill); background:transparent; color:var(--text-muted); cursor:pointer; }
 .con-switch-button:hover, .con-switch-button:focus-visible { border-color:var(--accent); color:var(--accent); }
-.con-switch-button svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.con-switch-button svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .con-switch-list { display:grid; gap:4px; max-height:50vh; margin:var(--sp-3) 0; overflow:auto; }
 .con-switch-list a { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 12px; border-radius:var(--r-md); color:var(--text-primary); text-decoration:none; }
 .con-switch-list a:hover, .con-switch-list a:focus-visible { background:var(--band); }
@@ -1527,6 +1563,16 @@ dialog {
 .plan-page .public-toolbar .calendar-export-icon { width:18px; height:18px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
 .plan-page .floor-plan-public-action { position: relative; display: inline-flex; align-items: center; }
 .plan-page .floor-plan-public-action[hidden] { display: none; }
+
+/* In den drei Standardmodi bleibt Bricolage der Marke und großen H1 vorbehalten.
+   Kleinere Überschriften nutzen die besser lesbare Atkinson-Hausschrift. */
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) body h2,
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) body h3,
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .con-card .t,
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .next-con-card .t,
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .room-head h3 {
+  font-family:var(--font-body);
+}
 .plan-page .floor-plan-public-menu { display: inline-flex; align-items: center; margin-top: 0; }
 .plan-page .floor-plan-public-menu > summary { display: inline-flex; align-items: center; list-style: none; cursor: pointer; }
 .plan-page .floor-plan-public-menu > summary::-webkit-details-marker { display: none; }
@@ -3018,9 +3064,6 @@ button.floor-plan-personal-game:hover, button.floor-plan-personal-game:focus-vis
   background: var(--chip-accent);
   flex-shrink: 0;
 }
-.chip-calendar-link { display:inline-grid; place-items:center; width:25px; height:25px; margin-left:5px; border:var(--border-w) solid var(--border); border-radius:var(--r-pill); background:var(--surface-1); color:var(--text-secondary); vertical-align:middle; }
-.chip-calendar-link:hover, .chip-calendar-link:focus-visible { border-color:var(--accent); color:var(--accent); }
-.chip-calendar-link svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 .plan-page .foot {
   padding-top: 20px;
   border-top: var(--border-w) solid var(--border);

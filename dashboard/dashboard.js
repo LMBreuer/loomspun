@@ -946,18 +946,17 @@ function renderCalendar(slots, rsvpsOpen) {
       : "";
     const locationLabel = locationText ? `${t("Raum", "Room")}: ${locationText}` : "";
     const roomPlanSlug = dashboardState?.con?.slug;
-    const roomPlanLink = roomPlanSlug
-      ? `<a class="calendar-roomplan-link" href="../plan.html?con=${encodeURIComponent(roomPlanSlug)}&view=raster&game=${encodeURIComponent(g.gameId)}" title="${t("Im Raumplan zeigen", "Show in room plan")}" aria-label="${escapeHtml(t(`${g.title} im Raumplan zeigen`, `Show ${g.title} in room plan`))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 9 4l6 2.5L20 4v13.5L15 20l-6-2.5L4 20Z"/><path d="M9 4v13.5M15 6.5V20"/></svg></a>`
+    const roomPlanHref = roomPlanSlug && g.location
+      ? `../plan.html?con=${encodeURIComponent(roomPlanSlug)}&view=raster&game=${encodeURIComponent(g.gameId)}`
       : "";
     return `
     <div class="calendar-card-shell" data-calendar-game data-game-id="${escapeHtml(g.gameId)}" data-day="${escapeHtml(day)}" data-slot-key="${escapeHtml(slotKey)}" data-system="${escapeHtml(gameSystem(g).toLocaleLowerCase(locale()))}" data-search="${escapeHtml(`${g.title} ${gameSystem(g)} ${gameFacilitator(g)} ${formatLabel(g.format)} ${locationText}`.toLocaleLowerCase(locale()))}" data-free="${String(isCountedGame(g) && frei(g) > 0)}" data-personal="${personalState?.type || ""}" data-suggestion-eligible="${String(suggestionEligible)}" data-default-order="${defaultOrder}" data-suggestion-order="${suggestionOrder}">
-      <a class="cal-card${g.format !== "capacity" ? " non-capacity-card" : ""}${roomPlanLink ? " has-roomplan-link" : ""}" href="${g.url}" target="_blank" rel="noopener" aria-label="${escapeHtml(`${g.title}, System ${gameSystem(g)}, ${t("Spielleitung", "facilitator")} ${gameFacilitator(g)}, ${formatTime(g.startTime)} ${t("bis", "to")} ${formatTime(g.endTime)}${g.format !== "capacity" ? `, ${formatLabel(g.format)}` : ""}${isCountedGame(g) ? `, ${g.playerSeats} ${t("Spielplätze plus Spielleitung", "player seats plus facilitator")}${showBusy ? `, ${frei(g)} ${t("frei", "available")}` : ""}` : ""}${locationLabel ? `, ${locationLabel}` : ""}${personalLabel ? `, ${personalLabel}` : ""}`)}">
+      <a class="cal-card${g.format !== "capacity" ? " non-capacity-card" : ""}" href="${g.url}" target="_blank" rel="noopener" aria-label="${escapeHtml(`${g.title}, System ${gameSystem(g)}, ${t("Spielleitung", "facilitator")} ${gameFacilitator(g)}, ${formatTime(g.startTime)} ${t("bis", "to")} ${formatTime(g.endTime)}${g.format !== "capacity" ? `, ${formatLabel(g.format)}` : ""}${isCountedGame(g) ? `, ${g.playerSeats} ${t("Spielplätze plus Spielleitung", "player seats plus facilitator")}${showBusy ? `, ${frei(g)} ${t("frei", "available")}` : ""}` : ""}${locationLabel ? `, ${locationLabel}` : ""}${personalLabel ? `, ${personalLabel}` : ""}`)}">
         <span class="t">${escapeHtml(g.title)}</span>
         <span class="m">${formatTime(g.startTime)}–${formatTime(g.endTime)}${g.format !== "capacity" ? ` <span class="badge">${escapeHtml(formatLabel(g.format))}</span>` : ""}${calendarCapacity(g)}</span>
         <span class="m"><span>${escapeHtml(gameSystem(g))}</span><span aria-hidden="true">·</span><span>${t("SL", "GM")}: ${escapeHtml(gameFacilitator(g))}</span>${personalState ? `<span class="calendar-personal-status is-${personalState.type}"><span aria-hidden="true">${personalStatusSymbol(personalState)}</span> ${escapeHtml(personalLabel)}</span>` : ""}</span>
-        ${locationLabel ? `<span class="m calendar-location"><span class="calendar-location-label">${t("Raum", "Room")}:</span><span>${escapeHtml(locationText)}</span></span>` : ""}
       </a>
-      ${roomPlanLink}
+      ${locationLabel ? `<div class="m calendar-location"><span class="calendar-location-label">${t("Raum", "Room")}:</span>${roomPlanHref ? `<a class="calendar-location-link" href="${roomPlanHref}" title="${t("Im Raumplan zeigen", "Show in room plan")}">${escapeHtml(locationText)} <span aria-hidden="true">↗</span></a>` : `<span>${escapeHtml(locationText)}</span>`}</div>` : ""}
     </div>`;
   };
   cal.innerHTML = `
@@ -1526,13 +1525,12 @@ window.addEventListener("uilanguagechange", () => renderCredits());
 let dashboardState = null;
 function renderLoadedDashboard() {
   if (!dashboardState) return;
-  const { slots, rsvpsOpen, ev, eventsList, con, slotSource, participantPlanning } = dashboardState;
+  const { slots, rsvpsOpen, ev, eventsList, con, slotSource, participantPlanning, cached } = dashboardState;
   const en = isEnglish();
   renderCredits(con);
-  document.getElementById("status").textContent =
-    (en ? "Updated: " : "Stand: ") +
-    new Intl.DateTimeFormat(locale(), { timeZone: TZ, dateStyle: "full", timeStyle: "short" }).format(new Date()) +
-    (en ? "" : " Uhr");
+  document.getElementById("status").textContent = cached
+    ? (en ? "Showing locally cached data; checking for updates …" : "Zeige lokal gespeicherte Daten; Änderungen werden geprüft …")
+    : (en ? "Updated: " : "Stand: ") + new Intl.DateTimeFormat(locale(), { timeZone: TZ, dateStyle: "full", timeStyle: "short" }).format(new Date()) + (en ? "" : " Uhr");
   applyEvent(ev, rsvpsOpen);
   render(slots, rsvpsOpen, participantPlanning);
   renderCalendar(slots, rsvpsOpen);
@@ -1567,13 +1565,33 @@ function renderLoadedDashboard() {
 }
 window.addEventListener("uilanguagechange", renderLoadedDashboard);
 
-Promise.all([load(), loadGames(), loadEvent(), loadEventsList(), findRaumplanCon(EVENT)]).then(async ([sessions, games, ev, eventsList, con]) => {
-  const rsvpsOpen = !!(ev?.fixed_access_time && ev.fixed_access_time <= Date.now());
-  const eligibleParticipantIds = await loadEligibleParticipantIds(ev?.event_access_levels, ev?.community_id);
-  if (activeTargetSource !== "manual") eligibleTargetCount = eligibleParticipantIds.size || null;
-  const [remoteBuckets, locationsBySession] = con
-    ? await Promise.all([findSlotBuckets(con.id), findRaumplanLocations(con.id)])
-    : [[], new Map()];
+const dashboardCacheKey = `loomspun-dashboard-public-cache:${EVENT}`;
+const dashboardCacheMaxAge = 24 * 60 * 60 * 1000;
+
+function readDashboardCache() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(dashboardCacheKey) || "null");
+    return cached?.savedAt && Date.now() - cached.savedAt < dashboardCacheMaxAge ? cached : null;
+  } catch { return null; }
+}
+function writeDashboardCache(payload) {
+  try {
+    // Öffentliche Darstellung cachen, aber keine Playabl-Profil-IDs dauerhaft ablegen.
+    const sessions = (payload.sessions || []).map(session => ({
+      ...session,
+      rsvps:Array.from({ length:(session.rsvps || []).length }, (_, index) => `cached:${session.id}:${index}`),
+      game_id:session.game_id ? {
+        ...session.game_id,
+        creator_id:session.game_id.creator_id ? { ...session.game_id.creator_id, id:"" } : session.game_id.creator_id,
+      } : session.game_id,
+    }));
+    localStorage.setItem(dashboardCacheKey, JSON.stringify({ ...payload, sessions, savedAt:Date.now() }));
+  } catch {}
+}
+function gamesFromSessions(sessions) {
+  return [...new Map(sessions.map(session => [String(session.game_id?.id), session.game_id]).filter(([id, game]) => id && game)).values()];
+}
+function resolveDashboardBuckets(sessions, remoteBuckets = []) {
   const localBuckets = loadLocalSlotBuckets();
   const storedSlotSource = localStorage.getItem(localSlotSourceKey) || (localBuckets.length ? "manual" : "");
   const manualBuckets = storedSlotSource === "manual" ? localBuckets : [];
@@ -1598,6 +1616,12 @@ Promise.all([load(), loadGames(), loadEvent(), loadEventsList(), findRaumplanCon
     { label:"Nachmittag", start_hour:CUTOFF, end_hour:24 }
   ];
   activeSlotSource = slotSource;
+  return { buckets, slotSource };
+}
+function showDashboardData({ sessions, games, ev, eventsList, con, remoteBuckets = [], locationsBySession = new Map(), eligibleParticipantIds = new Set(), cached = false }) {
+  const rsvpsOpen = !!(ev?.fixed_access_time && ev.fixed_access_time <= Date.now());
+  const { buckets, slotSource } = resolveDashboardBuckets(sessions, remoteBuckets);
+  if (activeTargetSource !== "manual") eligibleTargetCount = eligibleParticipantIds.size || null;
   if (activeTargetSource !== "manual" && eligibleTargetCount) {
     peakTargetRsvps = peakUniqueRsvps(sessions, activeSlotBuckets);
     const estimate = estimateTargetRange(eligibleTargetCount, peakTargetRsvps);
@@ -1607,9 +1631,39 @@ Promise.all([load(), loadGames(), loadEvent(), loadEventsList(), findRaumplanCon
   }
   const slots = groupSlots(sessions, buckets, locationsBySession);
   const participantPlanning = rsvpsOpen ? participantPlanningStats(slots, eligibleParticipantIds) : null;
-  dashboardState = { slots, games, rsvpsOpen, ev, eventsList, con, slotSource, participantPlanning };
+  dashboardState = { slots, games, rsvpsOpen, ev, eventsList, con, slotSource, participantPlanning, cached };
   renderLoadedDashboard();
+}
+
+const cachedDashboard = readDashboardCache();
+if (cachedDashboard?.sessions?.length) {
+  showDashboardData({
+    sessions:cachedDashboard.sessions,
+    games:cachedDashboard.games || gamesFromSessions(cachedDashboard.sessions),
+    ev:cachedDashboard.ev,
+    eventsList:cachedDashboard.eventsList || [],
+    con:cachedDashboard.con,
+    cached:true,
+  });
+}
+
+Promise.all([load(), loadEvent(), findRaumplanCon(EVENT)]).then(async ([sessions, ev, con]) => {
+  // Primärdaten sofort darstellen; Analysen und Raumzuordnungen folgen progressiv.
+  const sessionGames = gamesFromSessions(sessions);
+  showDashboardData({ sessions, games:sessionGames, ev, eventsList:cachedDashboard?.eventsList || [], con });
+
+  const [games, eventsList, eligibleParticipantIds, remoteBuckets, locationsBySession] = await Promise.all([
+    loadGames(),
+    loadEventsList(),
+    loadEligibleParticipantIds(ev?.event_access_levels, ev?.community_id),
+    con ? findSlotBuckets(con.id) : [],
+    con ? findRaumplanLocations(con.id) : new Map(),
+  ]);
+  const completeGames = games.length ? games : sessionGames;
+  showDashboardData({ sessions, games:completeGames, ev, eventsList, con, remoteBuckets, locationsBySession, eligibleParticipantIds });
+  writeDashboardCache({ sessions, games:completeGames, ev, eventsList, con });
 }).catch(err => {
+  if (dashboardState) return;
   document.getElementById("status").innerHTML = isEnglish()
     ? `<span class="err">Data could not be loaded (${err.message}).</span> Reload the page or view the event directly on <a href="${EVENT_URL}">Playabl</a>.`
     : `<span class="err">Daten konnten nicht geladen werden (${err.message}).</span> Bitte Seite neu laden oder direkt auf <a href="${EVENT_URL}">Playabl</a> schauen.`;

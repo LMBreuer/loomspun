@@ -108,7 +108,9 @@
     return records.sort((left, right) => {
       const leftTime = asDate(left.startDate)?.getTime() ?? Number.MAX_SAFE_INTEGER;
       const rightTime = asDate(right.startDate)?.getTime() ?? Number.MAX_SAFE_INTEGER;
-      return leftTime - rightTime || left.name.localeCompare(right.name, "de");
+      if (left.time !== right.time) return left.time === "upcoming" ? -1 : 1;
+      const dateOrder = left.time === "past" ? rightTime - leftTime : leftTime - rightTime;
+      return dateOrder || left.name.localeCompare(right.name, "de");
     });
   }
 

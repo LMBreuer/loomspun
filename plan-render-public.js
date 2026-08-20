@@ -11,9 +11,6 @@ function chipHtml(g, { crew = false, forceMinimal = false, inGrid = false, inRoo
   const titleHtml = g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(g.title)}</a>` : esc(g.title);
   const titleShortText = g.title.length > 22 ? g.title.slice(0, 21) + "…" : g.title;
   const titleShort = g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener">${esc(titleShortText)}</a>` : esc(titleShortText);
-  const calendarLink = !crew && S.con?.playabl_event_id && g.gameId
-    ? `<a class="chip-calendar-link no-print" href="dashboard/?event=${encodeURIComponent(S.con.playabl_event_id)}&game=${encodeURIComponent(g.gameId)}#kalender" title="${esc(tr("showInCalendar"))}" aria-label="${esc(tr("showGameInCalendar", { title:g.title }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M8 13h3v3H8Z"/></svg></a>`
-    : "";
 
   const summaryParts = [g.title, tr("seatsPersons", { n: g.seats })];
   if (g.provider) summaryParts.push(tr("providerLabel", { p: g.provider }));
@@ -47,18 +44,18 @@ function chipHtml(g, { crew = false, forceMinimal = false, inGrid = false, inRoo
     const gridHost = level === "full"
       ? `<div class="grid-chip-host">${esc(tr("hostShortLabel", { name: g.provider || "–" }))}</div>`
       : "";
-    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}${calendarLink}</div>${gridHost}${level === "minimal" ? "" : `<div class="grid-chip-meta">${esc(gridMeta)}</div>`}`;
+    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}</div>${gridHost}${level === "minimal" ? "" : `<div class="grid-chip-meta">${esc(gridMeta)}</div>`}`;
   } else if (inRoom) {
     const roomMeta = level === "minimal" ? "" : [
       tr("seatsCountLabel", { n: g.seats }),
       level === "full" && overSeats > 0 ? tr("overCapacityPlain") : "",
       ...(level === "full" ? reqTags.map(f => f.label) : []),
     ].filter(Boolean).join(" · ");
-    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}${calendarLink}</div>
+    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}</div>
       <div class="room-chip-host">${esc(tr("hostShortLabel", { name: g.provider || "–" }))}</div>
       <div class="room-chip-meta">${esc(roomMeta)}</div>`;
   } else if (level === "minimal") {
-    bodyHtml = `<div class="title-row"><span class="title-short">${titleShort}</span><span class="seats-short">${g.seats}p</span>${warnIconMinimal}${reqIconMinimal}${requestIconBtn}${calendarLink}</div>`;
+    bodyHtml = `<div class="title-row"><span class="title-short">${titleShort}</span><span class="seats-short">${g.seats}p</span>${warnIconMinimal}${reqIconMinimal}${requestIconBtn}</div>`;
   } else {
     const whereHtml = room && table
       ? `<div class="where" style="--chip-accent:${roomAccentVar(room)}"><span class="dot${roomMarkerClass(room)}"></span>${esc(room.name)} · ${esc(table.name)}</div>`
@@ -66,7 +63,7 @@ function chipHtml(g, { crew = false, forceMinimal = false, inGrid = false, inRoo
     const metaHtml = level === "medium"
       ? `<div class="meta-row"><span>${esc(tr("personsShort", { n: g.seats }))}</span>${g.provider ? `<span>${esc(g.provider)}</span>` : ""}${g.ws ? `<span class="badge">${esc(tr("workshop"))}</span>` : ""}${warnBadgeFull}${reqBadgeFull}</div>`
       : `<div class="meta-row"><span>${esc(g.slotLabel)}</span><span>${esc(g.time || "")}</span><span>${esc(tr("personsShort", { n: g.seats }))}</span>${g.ws ? `<span class="badge">${esc(tr("workshop"))}</span>` : ""}${g.manual ? `<span class="badge">${esc(tr("manualBadge"))}</span>` : ""}${warnBadgeFull}${reqBadgeFull}</div>`;
-    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}${calendarLink}</div>${whereHtml}${metaHtml}`;
+    bodyHtml = `<div class="title">${titleHtml}${requestIconBtn}</div>${whereHtml}${metaHtml}`;
   }
 
   let controlsHtml;

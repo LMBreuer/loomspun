@@ -27,7 +27,11 @@
   text-decoration: none;
   white-space: nowrap;
 }
-.brand-mark { width:24px; height:24px; flex:0 0 auto; }
+.brand-mark { width:24px; height:24px; flex:0 0 auto; overflow:visible; }
+.brand-mark path { transition:stroke .22s ease, opacity .22s ease, transform .22s ease; transform-origin:center; }
+.brand:hover .brand-mark path:not(.brand-mark-l), .brand:focus-visible .brand-mark path:not(.brand-mark-l) { opacity:.38; }
+.brand:hover .brand-mark-l, .brand:focus-visible .brand-mark-l { stroke:var(--accent); transform:translateX(.35px); }
+@media (prefers-reduced-motion:reduce) { .brand-mark path { transition:none; } }
 :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .brand { font-weight:600; letter-spacing:-.04em; }
 .brand-eyebrow { color: var(--accent-text); }
 .header-inner .page-tabs { justify-self: center; }

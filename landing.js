@@ -43,7 +43,7 @@ async function reloadCons() {
 
 /* ---------- Hervorgehobene "nächste Con"-Karte ---------- */
 // Für die nächste Con zählt der Start des verknüpften Playabl-Events.
-function computeNextCon() {
+function computeNextCons() {
   const now = new Date();
   const candidates = allCons.map(c => {
     const ev = c.playabl_event_id ? allEvents.find(e => String(e.id) === String(c.playabl_event_id)) : null;
@@ -52,8 +52,11 @@ function computeNextCon() {
     return date >= now ? { con: c, date } : null;
   }).filter(Boolean);
   candidates.sort((a, b) => a.date - b.date);
-  return candidates[0] || null;
+  if (!candidates.length) return [];
+  const firstDate = candidates[0].date.getTime();
+  return candidates.filter(candidate => candidate.date.getTime() - firstDate <= 14 * 86400000).slice(0, 3);
 }
+function computeNextCon() { return computeNextCons()[0] || null; }
 function formatCountdown(date) {
   const days = Math.ceil((date - new Date()) / 86400000);
   if (days <= 0) return tr("nextConToday");
@@ -69,24 +72,24 @@ function conDisplayDate(con) {
 }
 async function renderNextConCard() {
   const el = document.getElementById("nextConCard");
-  const next = computeNextCon();
-  if (!next) { el.innerHTML = ""; return; }
-  const { con, date } = next;
-  let crewBadge = "";
+  const nextCons = computeNextCons();
+  if (!nextCons.length) { el.innerHTML = ""; return; }
   const token = await Auth.accessToken();
-  if (token) {
-    // RLS liefert nur die eigene Mitgliedschaft; bei Fehlern bleibt das Badge aus.
+  const memberships = new Set();
+  if (token) await Promise.all(nextCons.map(async ({ con }) => {
     try {
       const rows = await supaFetch(`con_members?con_id=eq.${con.id}&select=role`, { headers: supaHeaders(token) });
-      if (rows?.length) crewBadge = `<span class="crew-badge"><span class="dot"></span>${esc(tr("nextConCrewBadge"))}</span>`;
+      if (rows?.length) memberships.add(String(con.id));
     } catch {}
-  }
-  const meta = `${esc(con.playabl_event_id ? conDisplayDate(con) : tr("createdOn", { date: conDisplayDate(con) }))}${con.playabl_event_id ? ` · ${esc(tr("playablEvent"))}` : ""}`;
-  const conId = encodeURIComponent(con.slug || con.id);
-  const dashboardAction = con.playabl_event_id
-    ? `<a class="btn primary" href="dashboard/?event=${encodeURIComponent(con.playabl_event_id)}">${esc(tr("pageTabDashboard"))}</a>`
-    : "";
-  el.innerHTML = `<article class="next-con-card">
+  }));
+  el.innerHTML = `<div class="next-cons-list">${nextCons.map(({ con, date }) => {
+    const crewBadge = memberships.has(String(con.id)) ? `<span class="crew-badge"><span class="dot"></span>${esc(tr("nextConCrewBadge"))}</span>` : "";
+    const meta = `${esc(con.playabl_event_id ? conDisplayDate(con) : tr("createdOn", { date: conDisplayDate(con) }))}${con.playabl_event_id ? ` · ${esc(tr("playablEvent"))}` : ""}`;
+    const conId = encodeURIComponent(con.slug || con.id);
+    const dashboardAction = con.playabl_event_id
+      ? `<a class="btn primary" href="dashboard/?event=${encodeURIComponent(con.playabl_event_id)}">${esc(tr("pageTabDashboard"))}</a>`
+      : "";
+    return `<article class="next-con-card">
     <div class="next-con-copy">
       <div class="eyebrow">${esc(tr("nextConBadgeText", { countdown: formatCountdown(date) }))}</div>
       <div class="t">${esc(con.name)}${crewBadge}</div>
@@ -97,6 +100,7 @@ async function renderNextConCard() {
       <a class="btn" href="plan.html?con=${conId}&entry=plan">${esc(tr("pageTabPlan"))}</a>
     </div>
   </article>`;
+  }).join("")}</div>`;
 }
 
 function renderIndexPageTabs() {
@@ -182,22 +186,25 @@ function renderCons() {
   const q = document.getElementById("conSearch").value.trim().toLocaleLowerCase(LANG === "en" ? "en" : "de");
   const community = document.getElementById("conCommunityFilter").value.trim().toLocaleLowerCase(LANG === "en" ? "en" : "de");
   const source = document.getElementById("conSourceFilter").value;
-  const next = computeNextCon();
-  const nextKey = next ? `loomspun:${next.con.id}` : null;
+  const nextKeys = new Set(computeNextCons().map(({ con }) => `loomspun:${con.id}`));
   const list = normalizedCons().filter(record => {
     const displayCommunity = conCommunityName(record);
     const searchable = `${record.name} ${displayCommunity} ${record.externalIds.playabl || ""} ${record.externalIds.loomspun || ""}`.toLocaleLowerCase(LANG === "en" ? "en" : "de");
-    return record.key !== nextKey
-      && record.scope === conDirectoryScope
+    return !nextKeys.has(record.key)
+      && (conDirectoryScope === "mine" ? record.managed : record.public)
       && record.time === conDirectoryTime
       && (!q || searchable.includes(q))
       && (!community || displayCommunity.toLocaleLowerCase(LANG === "en" ? "en" : "de").includes(community))
       && conSourceMatches(record.sourceKey, source);
+  }).sort((left, right) => {
+    const leftTime = left.startDate ? new Date(left.startDate).getTime() : Number.MAX_SAFE_INTEGER;
+    const rightTime = right.startDate ? new Date(right.startDate).getTime() : Number.MAX_SAFE_INTEGER;
+    return conDirectoryTime === "past" ? rightTime - leftTime : leftTime - rightTime;
   });
   document.getElementById("conList").innerHTML = list.map(record => `
-    <div class="con-card" data-con-key="${esc(record.key)}">
+    <div class="con-card" data-con-key="${esc(record.key)}"${record.capabilities.dashboard || record.capabilities.roomPlan ? ` data-default-href="${record.capabilities.dashboard ? `dashboard/?event=${encodeURIComponent(record.externalIds.playabl)}` : `plan.html?con=${encodeURIComponent(record.slug || record.externalIds.loomspun)}&entry=plan`}"` : ""}>
       <div>
-        <div class="t">${esc(record.name)}</div>
+        <div class="t">${record.capabilities.dashboard ? `<a href="dashboard/?event=${encodeURIComponent(record.externalIds.playabl)}">${esc(record.name)}</a>` : record.capabilities.roomPlan ? `<a href="plan.html?con=${encodeURIComponent(record.slug || record.externalIds.loomspun)}&entry=plan">${esc(record.name)}</a>` : esc(record.name)}</div>
         <div class="m">${esc(conDirectoryMeta(record))}</div>
       </div>
       <span class="con-card-actions">
@@ -219,6 +226,11 @@ function renderCons() {
 }
 document.getElementById("conSearch").addEventListener("input", renderCons);
 document.getElementById("conList").addEventListener("click", async e => {
+  const card = e.target.closest(".con-card[data-default-href]");
+  if (card && !e.target.closest("a, button, input, select, textarea")) {
+    location.href = card.dataset.defaultHref;
+    return;
+  }
   const createPlan = e.target.closest(".createPlanBtn");
   if (createPlan) {
     if (!Auth.session()) { authUI.requireLogin(); return; }
@@ -242,7 +254,6 @@ document.getElementById("conList").addEventListener("click", async e => {
     renderCons();
   } catch (err) { alert(tr("deleteFailed", { err: err.message })); }
 });
-
 document.querySelectorAll("[data-con-time]").forEach(button => button.addEventListener("click", () => {
   conDirectoryTime = button.dataset.conTime;
   renderCons();

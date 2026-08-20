@@ -9,14 +9,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="theme-effects.css?v=20260818-1">
-<link rel="stylesheet" href="app.css?v=20260818-4">
+<link rel="stylesheet" href="app.css?v=20260820-1">
 </head>
 <body class="landing-page">
 <a class="skip-link" href="#main" data-i18n="skipToContent">Zum Inhalt springen</a>
 <div class="wrap">
   <header class="app-header" aria-label="Kopfzeile" data-i18n-aria-label="headerLabel">
     <div class="header-inner">
-      <span class="brand"><svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M11 2V30"/><path d="M2 21H16.5"/><path d="M25.5 21H30"/><path d="M21 6V30"/><path d="M2 11H6.5"/><path d="M15.5 11H30"/></g></svg>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></span>
+      <a class="brand" href="index.html" aria-label="Loomspun – Startseite"><svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><path class="brand-mark-l" d="M11 2V30"/><path class="brand-mark-l" d="M2 21H16.5"/><path d="M25.5 21H30"/><path d="M21 6V30"/><path d="M2 11H6.5"/><path d="M15.5 11H30"/></g></svg>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></a>
       <nav class="page-tabs slot-tabs" id="pageTabs" role="group" aria-label="Seite wählen" data-i18n-aria-label="pageNavigation"></nav>
       <div class="header-right">
         <div id="contrastAidSwitch" class="contrast-aid-slot" hidden></div>
@@ -25,7 +25,7 @@
           <div class="controls-divider"></div>
           <div id="themeSwitch"></div>
         </div>
-        <button id="authBtn" type="button">Login / Registrieren</button>
+        <button id="authBtn" class="is-signed-out" type="button" title="Login / Registrieren" aria-label="Login / Registrieren"><svg class="auth-login-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 19c.8-3.5 3-5.3 6.5-5.3s5.7 1.8 6.5 5.3"></path></svg><span class="auth-login-label">Login / Registrieren</span></button>
       </div>
     </div>
   </header>
@@ -151,7 +151,7 @@
 <script src="auth.js"></script>
 <script src="playabl-api.js"></script>
 <script src="guided-tour.js?v=20260810-4"></script>
-<script src="con-model.js?v=20260818-1"></script>
-<script src="landing.js?v=20260818-5"></script>
+<script src="con-model.js?v=20260820-1"></script>
+<script src="landing.js?v=20260820-1"></script>
 </body>
 </html>

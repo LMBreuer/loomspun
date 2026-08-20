@@ -637,7 +637,7 @@
   .cal-card:hover { border-color: var(--accent); }
   .cal-card .t { font-weight: 600; font-size: var(--fs-sm); }
   .cal-card .m { font-size: var(--fs-xs); color: var(--text-secondary); display: flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; margin-top: 2px; }
-  .calendar-location { padding-top:2px; }
+  .calendar-location { display:flex; gap:5px; padding:7px 14px 0; color:var(--text-secondary); font-size:var(--fs-xs); }
   .calendar-location-label { color:var(--text-readable-muted); font-weight:700; }
   .calendar-personal-status { margin-left:auto; color:var(--text-primary); font-weight:800; }
   .calendar-personal-status.is-confirmed { color:var(--good-text); }
@@ -935,9 +935,11 @@
   .brand-cursor { display:none; }
   .dashboard-hero h1 { font-size:2.4rem; line-height:1.15; font-weight:800; }
   .dashboard-title-row { display:flex; align-items:center; gap:10px; }
-  .event-switch-button { display:grid; place-items:center; flex:0 0 auto; width:34px; height:34px; padding:0; border:var(--border-w) solid var(--border); border-radius:var(--r-pill); background:var(--surface-1); color:var(--text-secondary); cursor:pointer; }
+  .event-meta-row { display:flex; align-items:flex-end; gap:7px; min-width:0; flex-wrap:wrap; }
+  .event-meta-row .sub { min-width:0; }
+  .event-switch-button { display:grid; place-items:center; flex:0 0 auto; width:28px; height:28px; padding:0; border:0; border-radius:var(--r-pill); background:transparent; color:var(--text-readable-muted); cursor:pointer; }
   .event-switch-button:hover, .event-switch-button:focus-visible { border-color:var(--accent); color:var(--accent-text); }
-  .event-switch-button svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .event-switch-button svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   .dashboard-hero .sub { max-width:none; margin:6px 0 0; font-size:.95rem; }
   .dashboard-hero .event-date, .dashboard-hero .event-source { display:block; }
   .dashboard-hero .event-source { margin-top:2px; }
@@ -1024,10 +1026,8 @@
   .calendar-bento .cal-card:hover { transform:translateX(4px); border-color:transparent; }
   .calendar-card-shell { position:relative; margin:0 0 10px; }
   .calendar-card-shell .cal-card { margin:0; }
-  .calendar-card-shell .cal-card.has-roomplan-link { padding-right:48px; }
-  .calendar-roomplan-link { position:absolute; top:10px; right:10px; display:grid; place-items:center; width:30px; height:30px; border:var(--border-w) solid var(--border); border-radius:var(--r-pill); background:var(--surface-1); color:var(--text-secondary); }
-  .calendar-roomplan-link:hover, .calendar-roomplan-link:focus-visible { border-color:var(--accent); color:var(--accent-text); }
-  .calendar-roomplan-link svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .calendar-location-link { color:var(--accent-text); text-decoration:underline; text-decoration-color:color-mix(in srgb,var(--accent) 42%,transparent); text-underline-offset:3px; cursor:pointer; }
+  .calendar-location-link:hover { text-decoration-color:var(--accent); }
   @keyframes loomspun-deep-link-pulse { 0%,100% { box-shadow:0 0 0 0 transparent; } 25%,70% { box-shadow:0 0 0 5px var(--accent-soft); } }
   .calendar-card-shell.is-deep-link-target .cal-card { border-color:var(--accent); animation:loomspun-deep-link-pulse 1.6s ease-out; }
   .cal-slot-badge { font-size:.7rem; font-weight:700; white-space:nowrap; }
@@ -1513,6 +1513,16 @@
     background:
       radial-gradient(circle at 16px 16px,rgba(176,138,53,.075) 0 9px,transparent 9.5px) 0 0/32px 32px,
       var(--surface-1);
+  }
+
+  /* Display-Schrift nur für Loomspun und die große Event-H1. */
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) body h2,
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) body h3,
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .card h2,
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .card h3,
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .guided-tour-card h2,
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="contrast"]) .guided-tour-teaser h2 {
+    font-family:var(--font-body);
   }
   :root[data-theme="vienna"] .calendar-bento .cal-day {
     border-radius:72px 72px 8px 8px;

@@ -8,15 +8,15 @@
 <script src="theme-bootstrap.js?v=20260818-1"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=Syne:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&family=Jost:wght@400;500;600;700&family=Paytone+One&family=Open+Sans:wght@400;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Space+Grotesk:wght@600;700&family=Nunito:wght@400;600;700&family=Bangers&family=Poppins:wght@400;600;700&family=Wire+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dashboard.css?v=20260818-1">
-<link rel="stylesheet" href="../loomspun-shell.css?v=20260818-3">
+<link rel="stylesheet" href="dashboard.css?v=20260820-1">
+<link rel="stylesheet" href="../loomspun-shell.css?v=20260820-1">
 </head>
 <body class="dashboard-page">
 <a class="skip-link" href="#main">Zum Inhalt springen</a>
 <div class="wrap">
   <header class="app-header" aria-label="Kopfzeile">
     <div class="header-inner">
-      <a class="brand" href="../index.html"><svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M11 2V30"/><path d="M2 21H16.5"/><path d="M25.5 21H30"/><path d="M21 6V30"/><path d="M2 11H6.5"/><path d="M15.5 11H30"/></g></svg>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></a>
+      <a class="brand" href="../index.html" aria-label="Loomspun – Startseite"><svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><path class="brand-mark-l" d="M11 2V30"/><path class="brand-mark-l" d="M2 21H16.5"/><path d="M25.5 21H30"/><path d="M21 6V30"/><path d="M2 11H6.5"/><path d="M15.5 11H30"/></g></svg>Loomspun<span class="brand-cursor" aria-hidden="true">_</span></a>
       <nav class="page-tabs slot-tabs" id="pageTabs" aria-label="Seite wählen">
         <a href="../index.html" aria-pressed="false">Cons</a>
         <a href="#" aria-pressed="true">Dashboard</a>
@@ -42,9 +42,8 @@
       <div class="dashboard-eyebrow">Playabl · Spielangebot pro Slot<span class="brand-cursor" aria-hidden="true">_</span></div>
       <div class="dashboard-title-row">
         <h1 id="pageTitle">Spielangebot pro Slot</h1>
-        <button type="button" class="event-switch-button" id="eventSwitchOpen" title="Veranstaltung wechseln" aria-label="Veranstaltung wechseln"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 3-3m-3 3 3 3M7 7h9a3 3 0 0 1 3 3v1M17 17l-3 3m3-3-3-3m3 3H8a3 3 0 0 1-3-3v-1"/></svg></button>
       </div>
-      <p class="sub" id="pageSub">Daten werden live von Playabl geladen …</p>
+      <div class="event-meta-row"><p class="sub" id="pageSub">Daten werden live von Playabl geladen …</p><button type="button" class="event-switch-button" id="eventSwitchOpen" title="Veranstaltung wechseln" aria-label="Veranstaltung wechseln"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 3-3m-3 3 3 3M7 7h9a3 3 0 0 1 3 3v1M17 17l-3 3m3-3-3-3m3 3H8a3 3 0 0 1-3-3v-1"/></svg></button></div>
       <p id="rsvpBanner" class="banner" role="status" hidden></p>
     </section>
   </header>
@@ -238,7 +237,7 @@
 <script src="config.js?v=20260818-1"></script>
 <script src="api.js?v=20260731-2"></script>
 <script src="calendar-export.js?v=20260816-1"></script>
-<script src="dashboard.js?v=20260818-1"></script>
+<script src="dashboard.js?v=20260820-1"></script>
 <script src="guided-tour.js?v=20260816-1"></script>
 </body>
 </html>
